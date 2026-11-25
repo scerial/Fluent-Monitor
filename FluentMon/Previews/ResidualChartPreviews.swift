@@ -16,9 +16,9 @@ private struct ResidualChartCases: View {
         .preferredColorScheme(.dark)
     }
 
+    @MainActor
     private func store(names: Int) -> MonitorStore {
-        let series = SampleData.series(names: Array(SampleData.residualNames.prefix(names)), iterations: 1500)
-        let store = MonitorStore(series: series, target: 1e-6)
+        let store = SampleData.store(names: names)
         if withReadout {
             store.scrubIter = 800
         }

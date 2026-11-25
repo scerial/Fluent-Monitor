@@ -1,0 +1,72 @@
+name: FluentMon
+options:
+  bundleIdPrefix: dev.local
+  deploymentTarget:
+    iOS: "17.0"
+targets:
+  FluentMon:
+    type: application
+    platform: iOS
+    sources:
+      - path: FluentMon
+    info:
+      path: FluentMon/Info.plist
+      properties:
+        CFBundleDisplayName: FluentMon
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+          - UIInterfaceOrientationPortraitUpsideDown
+        NSLocalNetworkUsageDescription: FluentMon finds the Fluent monitoring server on your local network.
+        NSBonjourServices:
+          - _fluentmon._tcp
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        CFBundleURLTypes:
+          - CFBundleURLName: dev.local.fluentmon
+            CFBundleURLSchemes:
+              - fluentmon
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: "2"
+        PRODUCT_BUNDLE_IDENTIFIER: dev.local.fluentmon
+        SWIFT_VERSION: "5.0"
+        CODE_SIGNING_ALLOWED: YES
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: NO
+        GENERATE_INFOPLIST_FILE: NO
+  FluentMonTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: FluentMonTests
+    dependencies:
+      - target: FluentMon
+    settings:
+      base:
+        SWIFT_VERSION: "5.0"
+        CODE_SIGNING_ALLOWED: YES
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: NO
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/FluentMon.app/FluentMon"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  FluentMon:
+    build:
+      targets:
+        FluentMon: all
+        FluentMonTests: [test]
+    run:
+      config: Debug
+      commandLineArguments:
+        "-mock": true
+        "YES": true
+    test:
+      config: Debug
+      targets:
+        - FluentMonTests

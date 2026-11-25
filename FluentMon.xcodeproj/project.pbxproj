@@ -1,0 +1,591 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00D9B091D1C99F830A81B6DF /* ConsoleDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDBDCF08FF47E9FDB79B45D /* ConsoleDrawer.swift */; };
+		0CF77B544BF0AE31681CBFA2 /* PairingURLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD6BA15265FA4DDBF20CA07 /* PairingURLTests.swift */; };
+		111E6A8AB56DB8898E96E3CF /* FluentLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE30930391CB6CAA6495666E /* FluentLog.swift */; };
+		1A78DD659FFE9BFC91B9631D /* SeriesBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF42AAD57E54587310DDF3C4 /* SeriesBuffer.swift */; };
+		23D4725441B5FD8A6C904327 /* FluentMonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0774046BC877C51CBC05E645 /* FluentMonApp.swift */; };
+		285AB91F54CF8A53A84D3461 /* ConnectSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE23EE3D6EEEFC3DA18F9E0E /* ConnectSheet.swift */; };
+		2BE6BA7422D09A166655D621 /* HeaderBandPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40845CD3C824AE23982DED7 /* HeaderBandPreviews.swift */; };
+		364EF5376F55036239F3584A /* Palette.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0092DA0FED2F092A40703B /* Palette.swift */; };
+		3C0C329A75EFE37ADB522955 /* ResidualChartPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A1B109CFB997996ECE2DE9 /* ResidualChartPreviews.swift */; };
+		3D8F740AE90A35F19A8BA29F /* BarMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37279923625322E49B5E371 /* BarMetrics.swift */; };
+		40C8F2E5A1EC266AA14246CC /* ConnectSheetPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F29584384AA9819D6526E8 /* ConnectSheetPreviews.swift */; };
+		4376684076417C04B2235ECB /* HeaderBandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A17DADAE34234AC8544012 /* HeaderBandTests.swift */; };
+		47151D47E69D7D8D8EF13DED /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AE381E083F522149DBD384 /* Keychain.swift */; };
+		57E8EB714A50A3D7D539B979 /* MonitorClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6116499A0119136C80562D14 /* MonitorClientTests.swift */; };
+		666AF014FC4EEF133F706920 /* MockClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AEB58984BE05B28078BC1C2 /* MockClient.swift */; };
+		735A0C3D8EBFAEC93F05C82D /* MonitorStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CA4959E1CCFBFE0D98F383D /* MonitorStoreTests.swift */; };
+		7D0DE9B86F0213CDC44D4960 /* ProgressBarsPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28B684AF7CB9C203879DCC4E /* ProgressBarsPreviews.swift */; };
+		7D41712B0ECEFF2C973F8FF6 /* MonitorStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE1ABD53CA558741003CA59 /* MonitorStore.swift */; };
+		8625A7F2FD28EB94DE4A8C52 /* Discovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = F83DA9731C50F690F3809C52 /* Discovery.swift */; };
+		8846E7C2CE87588A5638ED7C /* ConsoleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B06679AE16C6821FCC225A /* ConsoleBuffer.swift */; };
+		8C8607C2CFB034CC54DD4DA4 /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D29E33C723DEC08372C5FE /* Messages.swift */; };
+		8F78E20EE1E4CAF097F02803 /* MessagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904F141BCBDEF5337241C725 /* MessagesTests.swift */; };
+		9084D13CB9234334E4106ADA /* HeaderBand.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2195312F7A0CC7EEDA75518 /* HeaderBand.swift */; };
+		909D1BC12DDBC09C7D2BA989 /* ConsoleBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 766E5E97477428F7A758D33C /* ConsoleBufferTests.swift */; };
+		952E1CCCEA20D07126BAC8E0 /* ProgressBars.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CA78CDDE9C10BC6964411F /* ProgressBars.swift */; };
+		976D38B97D8687CDA2DD85B3 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B755EEAE3C172126A83D746D /* DashboardView.swift */; };
+		9D01D62E94D09DE4A62FEBF3 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95F61A3AA87B70BC7F9413A0 /* SampleData.swift */; };
+		AAC9D2F4FDFE75D5EEEBDF36 /* DashboardGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80139D49375ACB944AB28A5F /* DashboardGeometry.swift */; };
+		ABAD953B0379A4FC52FFBCD4 /* MonitorClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172AD89D1236EEBBA5795BEB /* MonitorClient.swift */; };
+		AD0AD5FAC51425B224D1B23F /* ArcMeterPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 750D1C9B9B82C0AED4C20047 /* ArcMeterPreviews.swift */; };
+		B74FE75B2036C19B974B02AB /* SceneProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB17D12E3100C47A0AAF418 /* SceneProbe.swift */; };
+		B78A95395E27871494E3826F /* DashboardGeometryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3A13BB6B33935FE9A5FDAC /* DashboardGeometryTests.swift */; };
+		C04E88798B1FADC939E752D7 /* ResidualChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347027431BE105A60C69AEC8 /* ResidualChart.swift */; };
+		E81C69163ABF83D6E5FE952C /* ConsoleDrawerPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296D62195CD50C737324ADE0 /* ConsoleDrawerPreviews.swift */; };
+		E894B317F52690365C7FA3F6 /* SettingsSheetPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B908627DDA58ACA4ECC3B05 /* SettingsSheetPreviews.swift */; };
+		F0C2C56ECDE748DA3FD0B0C6 /* ArcMeter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 753EBF50442FBCAA1C92B113 /* ArcMeter.swift */; };
+		FBB046C7A84D7646FC06DA8A /* SeriesBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60DCFFBBCDA0E447BBD7D693 /* SeriesBufferTests.swift */; };
+		FD2AA8FC914026D2E67614CD /* FluentLogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968E6CD1324477D13E9EBD7D /* FluentLogTests.swift */; };
+		FFC0A54A3A17292356E753F1 /* KeychainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9DC0BFD19EA293917FC5C3 /* KeychainTests.swift */; };
+		FFEE44B18B4BF8ED3FC4B548 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9208F4E5D0F61BD22D5D1E3 /* SettingsSheet.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9CABD306546D5214B872609B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07247F9E976DB91E0B4DA946 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 37956B8854AE92FF7D91BFB2;
+			remoteInfo = FluentMon;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		00AE381E083F522149DBD384 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		0774046BC877C51CBC05E645 /* FluentMonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluentMonApp.swift; sourceTree = "<group>"; };
+		0AEB58984BE05B28078BC1C2 /* MockClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockClient.swift; sourceTree = "<group>"; };
+		172AD89D1236EEBBA5795BEB /* MonitorClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorClient.swift; sourceTree = "<group>"; };
+		26F29584384AA9819D6526E8 /* ConnectSheetPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectSheetPreviews.swift; sourceTree = "<group>"; };
+		2724CD9D203050621F659C0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		28B684AF7CB9C203879DCC4E /* ProgressBarsPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBarsPreviews.swift; sourceTree = "<group>"; };
+		296D62195CD50C737324ADE0 /* ConsoleDrawerPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleDrawerPreviews.swift; sourceTree = "<group>"; };
+		347027431BE105A60C69AEC8 /* ResidualChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidualChart.swift; sourceTree = "<group>"; };
+		3B908627DDA58ACA4ECC3B05 /* SettingsSheetPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheetPreviews.swift; sourceTree = "<group>"; };
+		4CA4959E1CCFBFE0D98F383D /* MonitorStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorStoreTests.swift; sourceTree = "<group>"; };
+		4DB17D12E3100C47A0AAF418 /* SceneProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneProbe.swift; sourceTree = "<group>"; };
+		54B06679AE16C6821FCC225A /* ConsoleBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleBuffer.swift; sourceTree = "<group>"; };
+		5EE1ABD53CA558741003CA59 /* MonitorStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorStore.swift; sourceTree = "<group>"; };
+		60DCFFBBCDA0E447BBD7D693 /* SeriesBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesBufferTests.swift; sourceTree = "<group>"; };
+		6116499A0119136C80562D14 /* MonitorClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorClientTests.swift; sourceTree = "<group>"; };
+		62A17DADAE34234AC8544012 /* HeaderBandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderBandTests.swift; sourceTree = "<group>"; };
+		686E2BFB856964A66C578082 /* FluentMon.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FluentMon.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E9DC0BFD19EA293917FC5C3 /* KeychainTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainTests.swift; sourceTree = "<group>"; };
+		70A1B109CFB997996ECE2DE9 /* ResidualChartPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResidualChartPreviews.swift; sourceTree = "<group>"; };
+		750D1C9B9B82C0AED4C20047 /* ArcMeterPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcMeterPreviews.swift; sourceTree = "<group>"; };
+		753EBF50442FBCAA1C92B113 /* ArcMeter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArcMeter.swift; sourceTree = "<group>"; };
+		766E5E97477428F7A758D33C /* ConsoleBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleBufferTests.swift; sourceTree = "<group>"; };
+		7CDBDCF08FF47E9FDB79B45D /* ConsoleDrawer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleDrawer.swift; sourceTree = "<group>"; };
+		80139D49375ACB944AB28A5F /* DashboardGeometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardGeometry.swift; sourceTree = "<group>"; };
+		8F3A13BB6B33935FE9A5FDAC /* DashboardGeometryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardGeometryTests.swift; sourceTree = "<group>"; };
+		904F141BCBDEF5337241C725 /* MessagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesTests.swift; sourceTree = "<group>"; };
+		95F61A3AA87B70BC7F9413A0 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		968E6CD1324477D13E9EBD7D /* FluentLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluentLogTests.swift; sourceTree = "<group>"; };
+		A2CA78CDDE9C10BC6964411F /* ProgressBars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBars.swift; sourceTree = "<group>"; };
+		B2195312F7A0CC7EEDA75518 /* HeaderBand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderBand.swift; sourceTree = "<group>"; };
+		B755EEAE3C172126A83D746D /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		BE30930391CB6CAA6495666E /* FluentLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluentLog.swift; sourceTree = "<group>"; };
+		BF0092DA0FED2F092A40703B /* Palette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Palette.swift; sourceTree = "<group>"; };
+		C37279923625322E49B5E371 /* BarMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarMetrics.swift; sourceTree = "<group>"; };
+		C9208F4E5D0F61BD22D5D1E3 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
+		CE23EE3D6EEEFC3DA18F9E0E /* ConnectSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectSheet.swift; sourceTree = "<group>"; };
+		DF42AAD57E54587310DDF3C4 /* SeriesBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesBuffer.swift; sourceTree = "<group>"; };
+		E0B3BAF21AEDC2615485EDF9 /* FluentMonTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FluentMonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E40845CD3C824AE23982DED7 /* HeaderBandPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderBandPreviews.swift; sourceTree = "<group>"; };
+		E4D29E33C723DEC08372C5FE /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
+		EBD6BA15265FA4DDBF20CA07 /* PairingURLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingURLTests.swift; sourceTree = "<group>"; };
+		F83DA9731C50F690F3809C52 /* Discovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Discovery.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		3FCE2B81D9A3D09A899E3FC4 /* FluentMonTests */ = {
+			isa = PBXGroup;
+			children = (
+				766E5E97477428F7A758D33C /* ConsoleBufferTests.swift */,
+				8F3A13BB6B33935FE9A5FDAC /* DashboardGeometryTests.swift */,
+				968E6CD1324477D13E9EBD7D /* FluentLogTests.swift */,
+				62A17DADAE34234AC8544012 /* HeaderBandTests.swift */,
+				6E9DC0BFD19EA293917FC5C3 /* KeychainTests.swift */,
+				904F141BCBDEF5337241C725 /* MessagesTests.swift */,
+				6116499A0119136C80562D14 /* MonitorClientTests.swift */,
+				4CA4959E1CCFBFE0D98F383D /* MonitorStoreTests.swift */,
+				EBD6BA15265FA4DDBF20CA07 /* PairingURLTests.swift */,
+				60DCFFBBCDA0E447BBD7D693 /* SeriesBufferTests.swift */,
+			);
+			path = FluentMonTests;
+			sourceTree = "<group>";
+		};
+		47A6B90AC4DFE02D2821CCA4 /* Previews */ = {
+			isa = PBXGroup;
+			children = (
+				750D1C9B9B82C0AED4C20047 /* ArcMeterPreviews.swift */,
+				26F29584384AA9819D6526E8 /* ConnectSheetPreviews.swift */,
+				296D62195CD50C737324ADE0 /* ConsoleDrawerPreviews.swift */,
+				E40845CD3C824AE23982DED7 /* HeaderBandPreviews.swift */,
+				28B684AF7CB9C203879DCC4E /* ProgressBarsPreviews.swift */,
+				70A1B109CFB997996ECE2DE9 /* ResidualChartPreviews.swift */,
+				95F61A3AA87B70BC7F9413A0 /* SampleData.swift */,
+				3B908627DDA58ACA4ECC3B05 /* SettingsSheetPreviews.swift */,
+			);
+			path = Previews;
+			sourceTree = "<group>";
+		};
+		4B21AF747CBC76644B1226A5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				686E2BFB856964A66C578082 /* FluentMon.app */,
+				E0B3BAF21AEDC2615485EDF9 /* FluentMonTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5FA45C85A263FD74B330738A /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				C37279923625322E49B5E371 /* BarMetrics.swift */,
+				80139D49375ACB944AB28A5F /* DashboardGeometry.swift */,
+				4DB17D12E3100C47A0AAF418 /* SceneProbe.swift */,
+			);
+			path = Layout;
+			sourceTree = "<group>";
+		};
+		7743D9F39ABD1D3DD0F769BC /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				753EBF50442FBCAA1C92B113 /* ArcMeter.swift */,
+				CE23EE3D6EEEFC3DA18F9E0E /* ConnectSheet.swift */,
+				7CDBDCF08FF47E9FDB79B45D /* ConsoleDrawer.swift */,
+				B755EEAE3C172126A83D746D /* DashboardView.swift */,
+				B2195312F7A0CC7EEDA75518 /* HeaderBand.swift */,
+				A2CA78CDDE9C10BC6964411F /* ProgressBars.swift */,
+				347027431BE105A60C69AEC8 /* ResidualChart.swift */,
+				C9208F4E5D0F61BD22D5D1E3 /* SettingsSheet.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		94C7B83BF4BADD4A19DEAB52 /* FluentMon */ = {
+			isa = PBXGroup;
+			children = (
+				0774046BC877C51CBC05E645 /* FluentMonApp.swift */,
+				2724CD9D203050621F659C0C /* Info.plist */,
+				5FA45C85A263FD74B330738A /* Layout */,
+				9B992C9A6F7E8C8649038238 /* Model */,
+				C6A04B8D8419E37214874F67 /* Net */,
+				47A6B90AC4DFE02D2821CCA4 /* Previews */,
+				7743D9F39ABD1D3DD0F769BC /* Views */,
+			);
+			path = FluentMon;
+			sourceTree = "<group>";
+		};
+		9B992C9A6F7E8C8649038238 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				54B06679AE16C6821FCC225A /* ConsoleBuffer.swift */,
+				00AE381E083F522149DBD384 /* Keychain.swift */,
+				5EE1ABD53CA558741003CA59 /* MonitorStore.swift */,
+				BF0092DA0FED2F092A40703B /* Palette.swift */,
+				DF42AAD57E54587310DDF3C4 /* SeriesBuffer.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C6A04B8D8419E37214874F67 /* Net */ = {
+			isa = PBXGroup;
+			children = (
+				F83DA9731C50F690F3809C52 /* Discovery.swift */,
+				BE30930391CB6CAA6495666E /* FluentLog.swift */,
+				E4D29E33C723DEC08372C5FE /* Messages.swift */,
+				0AEB58984BE05B28078BC1C2 /* MockClient.swift */,
+				172AD89D1236EEBBA5795BEB /* MonitorClient.swift */,
+			);
+			path = Net;
+			sourceTree = "<group>";
+		};
+		F4D43C978871466BAC12ADE8 = {
+			isa = PBXGroup;
+			children = (
+				94C7B83BF4BADD4A19DEAB52 /* FluentMon */,
+				3FCE2B81D9A3D09A899E3FC4 /* FluentMonTests */,
+				4B21AF747CBC76644B1226A5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0D3F3BEE68234D275575E544 /* FluentMonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00CE882BC9E212311916764B /* Build configuration list for PBXNativeTarget "FluentMonTests" */;
+			buildPhases = (
+				C9EAEC603CF33F7C8DC3F33A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				83235DD586656C4920A1E783 /* PBXTargetDependency */,
+			);
+			name = FluentMonTests;
+			packageProductDependencies = (
+			);
+			productName = FluentMonTests;
+			productReference = E0B3BAF21AEDC2615485EDF9 /* FluentMonTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		37956B8854AE92FF7D91BFB2 /* FluentMon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8F364410C183026C1EA83E7F /* Build configuration list for PBXNativeTarget "FluentMon" */;
+			buildPhases = (
+				1172CB14D7F06716380187C8 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FluentMon;
+			packageProductDependencies = (
+			);
+			productName = FluentMon;
+			productReference = 686E2BFB856964A66C578082 /* FluentMon.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		07247F9E976DB91E0B4DA946 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
+			};
+			buildConfigurationList = 2F0B533019B06EEE7D293A55 /* Build configuration list for PBXProject "FluentMon" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = F4D43C978871466BAC12ADE8;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 4B21AF747CBC76644B1226A5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				37956B8854AE92FF7D91BFB2 /* FluentMon */,
+				0D3F3BEE68234D275575E544 /* FluentMonTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1172CB14D7F06716380187C8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F0C2C56ECDE748DA3FD0B0C6 /* ArcMeter.swift in Sources */,
+				AD0AD5FAC51425B224D1B23F /* ArcMeterPreviews.swift in Sources */,
+				3D8F740AE90A35F19A8BA29F /* BarMetrics.swift in Sources */,
+				285AB91F54CF8A53A84D3461 /* ConnectSheet.swift in Sources */,
+				40C8F2E5A1EC266AA14246CC /* ConnectSheetPreviews.swift in Sources */,
+				8846E7C2CE87588A5638ED7C /* ConsoleBuffer.swift in Sources */,
+				00D9B091D1C99F830A81B6DF /* ConsoleDrawer.swift in Sources */,
+				E81C69163ABF83D6E5FE952C /* ConsoleDrawerPreviews.swift in Sources */,
+				AAC9D2F4FDFE75D5EEEBDF36 /* DashboardGeometry.swift in Sources */,
+				976D38B97D8687CDA2DD85B3 /* DashboardView.swift in Sources */,
+				8625A7F2FD28EB94DE4A8C52 /* Discovery.swift in Sources */,
+				111E6A8AB56DB8898E96E3CF /* FluentLog.swift in Sources */,
+				23D4725441B5FD8A6C904327 /* FluentMonApp.swift in Sources */,
+				9084D13CB9234334E4106ADA /* HeaderBand.swift in Sources */,
+				2BE6BA7422D09A166655D621 /* HeaderBandPreviews.swift in Sources */,
+				47151D47E69D7D8D8EF13DED /* Keychain.swift in Sources */,
+				8C8607C2CFB034CC54DD4DA4 /* Messages.swift in Sources */,
+				666AF014FC4EEF133F706920 /* MockClient.swift in Sources */,
+				ABAD953B0379A4FC52FFBCD4 /* MonitorClient.swift in Sources */,
+				7D41712B0ECEFF2C973F8FF6 /* MonitorStore.swift in Sources */,
+				364EF5376F55036239F3584A /* Palette.swift in Sources */,
+				952E1CCCEA20D07126BAC8E0 /* ProgressBars.swift in Sources */,
+				7D0DE9B86F0213CDC44D4960 /* ProgressBarsPreviews.swift in Sources */,
+				C04E88798B1FADC939E752D7 /* ResidualChart.swift in Sources */,
+				3C0C329A75EFE37ADB522955 /* ResidualChartPreviews.swift in Sources */,
+				9D01D62E94D09DE4A62FEBF3 /* SampleData.swift in Sources */,
+				B74FE75B2036C19B974B02AB /* SceneProbe.swift in Sources */,
+				1A78DD659FFE9BFC91B9631D /* SeriesBuffer.swift in Sources */,
+				FFEE44B18B4BF8ED3FC4B548 /* SettingsSheet.swift in Sources */,
+				E894B317F52690365C7FA3F6 /* SettingsSheetPreviews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C9EAEC603CF33F7C8DC3F33A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				909D1BC12DDBC09C7D2BA989 /* ConsoleBufferTests.swift in Sources */,
+				B78A95395E27871494E3826F /* DashboardGeometryTests.swift in Sources */,
+				FD2AA8FC914026D2E67614CD /* FluentLogTests.swift in Sources */,
+				4376684076417C04B2235ECB /* HeaderBandTests.swift in Sources */,
+				FFC0A54A3A17292356E753F1 /* KeychainTests.swift in Sources */,
+				8F78E20EE1E4CAF097F02803 /* MessagesTests.swift in Sources */,
+				57E8EB714A50A3D7D539B979 /* MonitorClientTests.swift in Sources */,
+				735A0C3D8EBFAEC93F05C82D /* MonitorStoreTests.swift in Sources */,
+				0CF77B544BF0AE31681CBFA2 /* PairingURLTests.swift in Sources */,
+				FBB046C7A84D7646FC06DA8A /* SeriesBufferTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		83235DD586656C4920A1E783 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 37956B8854AE92FF7D91BFB2 /* FluentMon */;
+			targetProxy = 9CABD306546D5214B872609B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		09E773A5D05D029BE2C4A283 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FluentMon/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.local.fluentmon;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		42F1E0F4FD2CAE0AA0612D2B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		45E6593565E210AC6F7C1D39 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.local.FluentMonTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FluentMon.app/FluentMon";
+			};
+			name = Release;
+		};
+		58DC690817716E1E16EE5B8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FluentMon/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.local.fluentmon;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+		713D41BF3E27A5895E2017C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.local.FluentMonTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FluentMon.app/FluentMon";
+			};
+			name = Debug;
+		};
+		8689DBD16F69A0EE2A721895 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		00CE882BC9E212311916764B /* Build configuration list for PBXNativeTarget "FluentMonTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				713D41BF3E27A5895E2017C3 /* Debug */,
+				45E6593565E210AC6F7C1D39 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2F0B533019B06EEE7D293A55 /* Build configuration list for PBXProject "FluentMon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				42F1E0F4FD2CAE0AA0612D2B /* Debug */,
+				8689DBD16F69A0EE2A721895 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8F364410C183026C1EA83E7F /* Build configuration list for PBXNativeTarget "FluentMon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09E773A5D05D029BE2C4A283 /* Debug */,
+				58DC690817716E1E16EE5B8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 07247F9E976DB91E0B4DA946 /* Project object */;
+}

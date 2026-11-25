@@ -18,15 +18,30 @@ enum SampleData {
         Meter(id: 9, title: "CPU 8", major: "—", minor: "—", outer: [])
     ]
 
-    static func series(names: [String], iterations: Int) -> [Series] {
-        names.enumerated().map { index, name in
+    @MainActor
+    static func store(names: Int, iterations: Int = 1500, target: Double = 1e-6) -> MonitorStore {
+        let store = MonitorStore()
+        store.settings.target = target
+        let columns = Array(residualNames.prefix(names))
+        let iters = Array(1...iterations)
+        let values: [[Double]] = columns.indices.map { index in
             let start = pow(10, Double(-1 - index % 3))
             let tau = 120 + Double(index) * 30
-            let points = (1...iterations).map { i in
-                Point(iter: i, value: start * exp(-Double(i) / tau) + 1e-8)
-            }
-            return Series(id: index, name: name, points: points)
+            return iters.map { start * exp(-Double($0) / tau) + 1e-8 }
         }
+        let object: [String: Any] = [
+            "t": "snapshot",
+            "session": ["id": "preview", "case": "duct_kw", "mode": "transient", "status": "running", "started": ""],
+            "columns": columns,
+            "kinds": columns.map { _ in "res" },
+            "iters": iters,
+            "values": values
+        ]
+        if let data = try? JSONSerialization.data(withJSONObject: object),
+           let message = try? decodeIncoming(data) {
+            store.apply(message, now: .now)
+        }
+        return store
     }
 
     static func consoleLines(count: Int) -> [ConsoleLine] {

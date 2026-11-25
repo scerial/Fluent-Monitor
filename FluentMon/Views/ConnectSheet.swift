@@ -1,10 +1,6 @@
 import SwiftUI
 
 struct ConnectSheet: View {
-    enum DiscoveryState: Equatable {
-        case searching, found, notFound, denied
-    }
-
     let servers: [DiscoveredServer]
     let onConnect: (Endpoint) -> Void
     let initial: Endpoint?
