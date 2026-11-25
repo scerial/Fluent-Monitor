@@ -47,7 +47,7 @@ These types exist before the UI work starts; use them as they are.
 ### U2: progress bars
 
 - **File:** `Views/ProgressBars.swift`. `struct ProgressBars: View { let bars: Bars?; let metrics: BarMetrics }`.
-- **Look:** three rows, each a title, a 7 pt rounded track at 10 % white, a rounded fill, and a caption when `metrics.showCaptions` is true. Row heights and padding come from `BarMetrics`, never from measuring. Titles: `Iterations`, `Convergence to 1e-6`, `Time steps`. Captions are the `label` strings of the message, one line each, truncated in the middle.
+- **Look:** three rows, each a title, a 12 pt capsule track at 12 % white behind the fill, and a caption when `metrics.showCaptions` is true. Row heights and padding come from `BarMetrics`, never from measuring. Titles: `Iterations`, `Convergence to 1e-6`, `Time steps`. Captions are the `label` strings of the message, one line each, truncated in the middle.
 - **Fill colours:** iterations blue accent, green when converged; convergence teal for `ok`, amber for `stalled`, red for `rising` and `nan`; time steps purple.
 - **Steady run:** when `step` is nil the time-step row stays in place, dimmed, with its title and the text `Steady run`, and a grey empty track.
 - **Log-scale hint:** on the convergence track, one faint tick at each whole decade: i / of of the track width for i = 1 to ⌈of⌉ − 1, 1 pt wide, white at 30 % opacity, drawn over the fill and taller than the track by 3 pt, no numbers. No ticks when `of ≤ 1`. In compact mode drop them if two would be closer than 8 pt.
