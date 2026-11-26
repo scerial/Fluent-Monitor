@@ -10,6 +10,7 @@ from fluentmon.setup.runner import Context, StepError
 
 WEB_SERVER_KEYS: dict[str, str] = {
     "runWebServerMenuItem": "true",
+    "listenerIp": "127.0.0.1",
     "listenerPort": "8085",
 }
 

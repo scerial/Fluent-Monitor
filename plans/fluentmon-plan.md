@@ -1171,6 +1171,7 @@ Interface changes since the architecture stage, each made on the user's request 
 | 2026-11-26 | Installer: uninstall restores the LHM settings file only when setup did not install the LHM folder | Uninstall behaviour |
 | 2026-11-26 | Installer: `WindowsBackend` returns text from PowerShell as base64 of UTF-8; `windows` is registered as a pytest marker in `pyproject.toml` | Windows backend |
 | 2026-11-26 | Installer: supersedes the build-order row above. I9 and I10 are built with the placeholder pins; the recon step pins the real values afterwards, and no real install passes until then | Build order |
+| 2026-11-26 | Recon 2 (confirmed on a Windows PC): LHM's `LibreHardwareMonitor.config` uses `runWebServerMenuItem` = `true`, `listenerPort` = `8085`, `listenerIp` = `+` by default. `WEB_SERVER_KEYS` adds `listenerIp` = `127.0.0.1` so LHM's web server is local only, as section 9 requires | Installer: LHM settings file keys |
 
 ## 13. Implementation instructions: iPad app
 

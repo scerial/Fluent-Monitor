@@ -149,6 +149,7 @@ def test_apply_settings_keeps_unrelated_key() -> None:
     values = {e.get("key"): e.get("value") for e in root.find("appSettings").findall("add")}
     assert values["Other"] == "x"
     assert values["listenerPort"] == "8085"
+    assert values["listenerIp"] == "127.0.0.1"
 
 
 def test_apply_settings_replaces_wrong_port() -> None:
