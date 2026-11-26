@@ -69,11 +69,7 @@ struct ConnectSheet: View {
                     }
                 }
                 Section {
-                    Button("Connect") {
-                        connect()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .disabled(!canConnect)
+                    connectButton
                 }
             }
             .navigationTitle("Connect to FluentMon")
@@ -90,6 +86,25 @@ struct ConnectSheet: View {
             if tokenRejected {
                 tokenFocused = true
             }
+        }
+    }
+
+    @ViewBuilder
+    private var connectButton: some View {
+        if #available(iOS 26.0, *) {
+            Button("Connect") {
+                connect()
+            }
+            .buttonStyle(.glassProminent)
+            .frame(maxWidth: .infinity)
+            .disabled(!canConnect)
+        } else {
+            Button("Connect") {
+                connect()
+            }
+            .buttonStyle(.borderedProminent)
+            .frame(maxWidth: .infinity)
+            .disabled(!canConnect)
         }
     }
 

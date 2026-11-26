@@ -85,6 +85,7 @@ struct ConsoleDrawer: View {
         .padding(.horizontal, 12)
         .frame(height: 28)
         .frame(maxWidth: .infinity)
+        .modifier(GlassSurface(shape: Rectangle(), fallback: .ultraThinMaterial))
         .contentShape(Rectangle())
         .onTapGesture {
             shift(1)
@@ -174,10 +175,12 @@ struct ConsoleDrawer: View {
                         } label: {
                             Text("Live ↓ \(unseen) new")
                                 .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(.primary)
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 6)
-                                .background(.thinMaterial, in: Capsule())
+                                .modifier(GlassSurface(shape: Capsule(), fallback: .thinMaterial))
                         }
+                        .buttonStyle(.plain)
                         .padding(12)
                     }
                 }
@@ -238,6 +241,20 @@ struct ConsoleDrawer: View {
         case "h": return .secondary
         case "r": return Color(white: 0.45)
         default: return .primary
+        }
+    }
+}
+
+private struct GlassSurface<S: Shape>: ViewModifier {
+    let shape: S
+    let fallback: Material
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content.glassEffect(.regular.interactive(), in: shape)
+        } else {
+            content.background(fallback, in: shape)
         }
     }
 }
