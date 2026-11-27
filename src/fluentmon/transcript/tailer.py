@@ -96,14 +96,12 @@ class FileTailer:
     async def _drain_loop(self) -> None:
         event = self._drain_requested
         assert event is not None
-        armed = True
         while not self._stopped:
-            if armed and self._safety_read_s > 0:
+            if self._safety_read_s > 0:
                 try:
                     await asyncio.wait_for(event.wait(), self._safety_read_s)
                 except TimeoutError:
                     self._drain_once()
-                    armed = False
                     continue
             else:
                 await event.wait()
@@ -111,7 +109,6 @@ class FileTailer:
             if self._stopped:
                 return
             self._drain_once()
-            armed = True
 
     def _open(self, identity: tuple[int, int]) -> None:
         self._handle = open(self.path, "rb")
