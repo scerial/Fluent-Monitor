@@ -211,3 +211,19 @@ def test_dry_run_tailscale_without_rule_does_not_fail() -> None:
     out = io.StringIO()
     fields = TailscaleStep(scripted(["y"])).run(make_ctx(backend, out, dry_run=True))
     assert fields == {"range": TAILSCALE_RANGE}
+
+
+def test_stopped_lhm_task_is_restarted_and_answering_one_is_done() -> None:
+    backend = FakeBackend()
+    ctx = make_ctx(backend)
+    LhmTaskStep().run(ctx)
+    assert LhmTaskStep().done(ctx) is False
+    backend.calls.clear()
+    LhmTaskStep().run(ctx)
+    assert [name for name in mutating(backend) if name.startswith("task_")] == [
+        "task_stop",
+        "task_register",
+        "task_start",
+    ]
+    backend.json_by_url[pins.LHM_DATA_URL] = {"Children": []}
+    assert LhmTaskStep().done(ctx) is True

@@ -1176,6 +1176,7 @@ Interface changes since the architecture stage, each made on the user's request 
 | 2026-11-27 | Patch-up (section 17): `reversed flow`, `turbulent viscosity limited` and `temperature limited` lines are console warnings (`w`) only and no longer raise a `problem` event; `PROBLEM` in section 2 is split into `ERROR` and `WARNING`. A `problem` event is emitted only when the status changes to `problem` | Parser patterns, event rule |
 | 2026-11-27 | Patch-up (section 17): the notifier rate-limits `converged` as well as `problem`, each kind on its own `dedupe_s` window | Notification behaviour |
 | 2026-11-27 | Patch-up (section 17): when `sys.stdout` or `sys.stderr` is `None` (started by `pythonw.exe`), `fmon serve` sends both to `logs\server.log` next to the default config path; `print_pairing` writes nothing when it has no stream | File layout (new `logs\server.log`), startup behaviour |
+| 2026-11-27 | Patch-up (section 17): preflight accepts `System` as the owner of port 8085 when LHM's `data.json` answers, and `task_lhm` is done only while `data.json` answers; otherwise it stops, registers and starts the task again (found on the first real install) | Installer: preflight and `task_lhm` rules |
 | 2026-11-27 | The Python package moves from `fluentmon/` to `src/fluentmon/`; `pyproject.toml` finds packages under `src`. On Windows the top-level `fluentmon/` and the iPad app's `FluentMon/` are the same folder, so `uv tool install` built a wheel without the package and `fmon` failed with `No module named 'fluentmon'` (found on the first real install). Import names are unchanged | File layout |
 
 ## 13. Implementation instructions: iPad app
@@ -1832,6 +1833,20 @@ A code review found places where the server and the iPad disagree, and server be
 - **Do:** delete the `///` comment lines in the two Swift files. In `progress.md`, rewrite "Where things stand" to say: the server, installer and app are committed on `main`; the server has not been run end to end with the iPad; section 17 lists the patch-up tasks and which were built and tested. Remove the claim that nothing is committed and the "Uncommitted state" section.
 - **Acceptance:** no `///` or `//` comment lines remain in `FluentMon/`; `progress.md` matches the repository.
 - **Out of scope:** the plan's older open-question sections.
+
+### Task P9: preflight with LHM running
+
+- **Files:** `src/fluentmon/setup/windows_steps.py`, `tests/test_commands.py`.
+- **Do:** Windows reports `System` as the owner of a port served through `http.sys`, which LHM's web server uses. `PreflightStep` accepts the owner `System` (any letter case) for port 8085 only, and only when `backend.http_get_json(pins.LHM_DATA_URL)` is not `None`.
+- **Acceptance:** tests for `System` on 8085 with `data.json` answering (accepted), `System` on 8085 without an answer (rejected), and `System` on 8765 (rejected).
+- **Out of scope:** `port_owner` in the Windows backend.
+
+### Task P10: a stopped LHM is started again
+
+- **Files:** `src/fluentmon/setup/windows_steps.py`, `tests/test_windows_steps.py`.
+- **Do:** `LhmTaskStep.done` also requires `backend.http_get_json(pins.LHM_DATA_URL)` to answer. `run` calls `task_stop` first when the task exists, so that a running LHM reads the current settings file, then registers and starts as before.
+- **Acceptance:** a test with a task that has a last result and no `data.json` answer is not done, and a run stops, registers and starts it; with an answer it is done.
+- **Out of scope:** waiting for LHM inside the step (`detect` already waits).
 
 ### Open questions left for refinement
 
