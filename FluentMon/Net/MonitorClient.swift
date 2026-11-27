@@ -1,5 +1,8 @@
 import Foundation
+import os
 import UIKit
+
+private let netLog = Logger(subsystem: "dev.local.fluentmon", category: "net")
 
 struct Endpoint: Equatable {
     var url: URL
@@ -90,7 +93,11 @@ final class MonitorClient: Feed {
             case .success(let message):
                 var decoded: Incoming?
                 if case .data(let data) = message {
-                    decoded = try? decodeIncoming(data)
+                    do {
+                        decoded = try decodeIncoming(data)
+                    } catch {
+                        netLog.error("decode failed: \(String(describing: error), privacy: .public)")
+                    }
                 }
                 Task { @MainActor [weak self] in
                     self?.handle(socket, decoded)

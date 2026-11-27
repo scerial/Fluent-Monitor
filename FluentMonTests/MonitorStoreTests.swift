@@ -67,6 +67,16 @@ final class MonitorStoreTests: XCTestCase {
         XCTAssertNil(store.bars?.step)
     }
 
+    func testNullBarsSnapshotThenResidAppends() throws {
+        let store = MonitorStore()
+        try apply(store, #"{"t":"snapshot","session":{"id":"x","case":"FFF","mode":"steady","status":"running","started":""},"columns":["continuity"],"kinds":["res"],"iters":[1,2],"values":[[1.0,0.5]],"bars":{"iter":null,"conv":null,"step":null},"con_tail":null}"#)
+        XCTAssertEqual(store.bars?.iter.label, "")
+        XCTAssertEqual(store.bars?.conv.label, "")
+        XCTAssertNil(store.bars?.step)
+        try apply(store, #"{"t":"resid","rows":[[3,[0.2]]]}"#)
+        XCTAssertEqual(store.series[0].points.map(\.iter), [1, 2, 3])
+    }
+
     func testConnectionStaleAfterSevenSeconds() throws {
         let store = MonitorStore()
         store.setOffline(false)

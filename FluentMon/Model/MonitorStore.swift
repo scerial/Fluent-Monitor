@@ -269,21 +269,32 @@ final class MonitorStore {
     }
 
     private func makeBars(_ msg: BarsMsg) -> Bars {
-        var iterLabel = "\(msg.iter.left) left"
-        if let eta = msg.iter.etaS { iterLabel += " · ETA \(clock(eta))" }
-        var convLabel = "Limiting: \(msg.conv.limiting ?? "—") "
-        convLabel += msg.conv.rmax.map { String(format: "%.1e", locale: Locale(identifier: "en_US_POSIX"), $0) } ?? "—"
-        convLabel += " · \(fixed(msg.conv.decades ?? 0, 1)) / \(fixed(msg.conv.of, 1)) decades"
-        if let iters = msg.conv.itersToTarget { convLabel += " · ≈ \(iters.formatted()) iters" }
-        var stepLabel: String?
-        if let step = msg.step {
-            stepLabel = "t = \(fixed(step.flowTime, 4)) / \(fixed(step.tEnd, 4)) s"
-            if let eta = step.etaS { stepLabel? += " · ETA \(clock(eta))" }
+        var iterRow = BarRow(p: 0, label: "")
+        if let iter = msg.iter {
+            var iterLabel = "\(iter.left) left"
+            if let eta = iter.etaS { iterLabel += " · ETA \(clock(eta))" }
+            iterRow = BarRow(p: iter.p, label: iterLabel)
         }
-        return Bars(iter: BarRow(p: msg.iter.p, label: iterLabel),
+        var convRow = ConvRow(p: 0, of: 0, state: .ok, label: "")
+        if let conv = msg.conv {
+            var convLabel = "Limiting: \(conv.limiting ?? "—") "
+            convLabel += conv.rmax.map { String(format: "%.1e", locale: Locale(identifier: "en_US_POSIX"), $0) } ?? "—"
+            convLabel += " · \(fixed(conv.decades ?? 0, 1)) / \(fixed(conv.of, 1)) decades"
+            if let iters = conv.itersToTarget { convLabel += " · ≈ \(iters.formatted()) iters" }
+            convRow = ConvRow(p: conv.p, of: conv.of, state: ConvState(wire: conv.state), label: convLabel)
+        }
+        var stepRow: BarRow?
+        if let step = msg.step {
+            var stepLabel = "t = \(fixed(step.flowTime, 4))"
+            if let tEnd = step.tEnd { stepLabel += " / \(fixed(tEnd, 4))" }
+            stepLabel += " s"
+            if let eta = step.etaS { stepLabel += " · ETA \(clock(eta))" }
+            stepRow = BarRow(p: step.p, label: stepLabel)
+        }
+        return Bars(iter: iterRow,
                     converged: session?.status == .converged,
-                    conv: ConvRow(p: msg.conv.p, of: msg.conv.of, state: ConvState(wire: msg.conv.state), label: convLabel),
-                    step: msg.step.map { BarRow(p: $0.p, label: stepLabel ?? "") })
+                    conv: convRow,
+                    step: stepRow)
     }
 
     private func cpuMeter(index: Int, id: Int) -> Meter {
@@ -294,7 +305,7 @@ final class MonitorStore {
         let clock = i < sys.clkMhz.count ? sys.clkMhz[i] : nil
         return Meter(id: index, title: "CPU \(id)",
                      major: load.map { "\(Int($0.rounded())) %" } ?? "—",
-                     minor: clock.map { "\(fixed(Double($0) / 1000, 1)) GHz" } ?? "—",
+                     minor: clock.map { "\(fixed($0 / 1000, 1)) GHz" } ?? "—",
                      outer: load.map { [Segment(id: 0, from: 0, to: $0 / 100, color: Palette.cool)] } ?? [])
     }
 
