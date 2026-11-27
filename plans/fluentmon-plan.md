@@ -91,8 +91,8 @@ DATA      = re.compile(r"^\s*(?P<it>\d+)\s+(?P<vals>(?:\S+\s+)+?)"
 FLOWTIME  = re.compile(r"^\s*Flow time\s*=\s*(?P<t>[-+0-9.eE]+)\s*s?\s*,\s*time step\s*=\s*(?P<n>\d+)")
 MORESTEPS = re.compile(r"^\s*(?P<n>\d+)\s+more time steps?")
 CONVERGED = re.compile(r"^\s*!\s*(?P<it>\d+)\s+solution is converged")
-PROBLEM   = re.compile(r"(Divergence detected|Floating point exception|Error:|"
-                       r"reversed flow|turbulent viscosity limited|temperature limited)", re.I)
+ERROR     = re.compile(r"(Divergence detected|Floating point exception|Error:)", re.I)
+WARNING   = re.compile(r"(reversed flow|turbulent viscosity limited|temperature limited)", re.I)
 
 def num(tok):
     try:
@@ -117,7 +117,7 @@ Rules:
 | `run_start` | first `iter`, or iterations-left larger than on the previous line | resets the progress baselines |
 | `step` | `FLOWTIME` + `MORESTEPS` | time-step bar, flow time |
 | `converged` | `CONVERGED` | green state, notification |
-| `problem` | `PROBLEM` | red banner, console highlight, push notification |
+| `problem` | `ERROR`, once per change of status into `problem` (a `WARNING` line is console kind `w` only) | red banner, console highlight, push notification |
 | `idle` | no `iter` for max(30 s, 5 × mean time per iteration) | grey state, bars freeze |
 | `line` | every line | console stream |
 
