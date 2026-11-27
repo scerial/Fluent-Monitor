@@ -50,7 +50,6 @@ def _attach_missing_streams() -> None:
 
 
 def _serve(args: argparse.Namespace) -> int:
-    _attach_missing_streams()
     cfg = load_config(args.config)
     if not cfg.server.token:
         print("refusing to start: config.toml has no [server] token", file=sys.stderr)
@@ -82,7 +81,10 @@ def main(argv: Sequence[str] | None = None) -> int:
 
         return _installer(values, WindowsBackend())
     args = build_parser().parse_args(values)
+    if args.command == "serve":
+        _attach_missing_streams()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
+    logging.getLogger("httpx").setLevel(logging.WARNING)
     if args.command == "version":
         print(__version__)
         return 0
