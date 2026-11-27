@@ -168,7 +168,7 @@ class StepTracker:
     def update(self, now: float, step: int, flow_time: float, more: int) -> dict:
         if self._n0 is None:
             self._n0 = step
-        if self._last_now is not None:
+        if self._last_now is not None and now - self._last_now > 0:
             self._gaps.append(now - self._last_now)
         if self._last_step is not None and self._last_flow is not None and step > self._last_step:
             self._dt = (flow_time - self._last_flow) / (step - self._last_step)
