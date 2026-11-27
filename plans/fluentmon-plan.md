@@ -1177,6 +1177,9 @@ Interface changes since the architecture stage, each made on the user's request 
 | 2026-11-27 | Patch-up (section 17): the notifier rate-limits `converged` as well as `problem`, each kind on its own `dedupe_s` window | Notification behaviour |
 | 2026-11-27 | Patch-up (section 17): when `sys.stdout` or `sys.stderr` is `None` (started by `pythonw.exe`), `fmon serve` sends both to `logs\server.log` next to the default config path; `print_pairing` writes nothing when it has no stream | File layout (new `logs\server.log`), startup behaviour |
 | 2026-11-27 | Patch-up (section 17): preflight accepts `System` as the owner of port 8085 when LHM's `data.json` answers, and `task_lhm` is done only while `data.json` answers; otherwise it stops, registers and starts the task again (found on the first real install) | Installer: preflight and `task_lhm` rules |
+| 2026-11-27 | Patch-up (section 17): the doctor's `Tasks` check also passes a last result of 267009 (task is running), which is what both tasks report on a healthy install | Doctor check |
+| 2026-11-27 | Patch-up (section 17): the `httpx` logger is set to `WARNING`, and `serve` attaches its log streams before logging is configured | Logging behaviour |
+| 2026-11-27 | Patch-up (section 17): at server startup the pairing link and QR code are printed only to a terminal, never into a log or redirected output | Startup behaviour (section 9 pairing) |
 | 2026-11-27 | The Python package moves from `fluentmon/` to `src/fluentmon/`; `pyproject.toml` finds packages under `src`. On Windows the top-level `fluentmon/` and the iPad app's `FluentMon/` are the same folder, so `uv tool install` built a wheel without the package and `fmon` failed with `No module named 'fluentmon'` (found on the first real install). Import names are unchanged | File layout |
 
 ## 13. Implementation instructions: iPad app
@@ -1847,6 +1850,27 @@ A code review found places where the server and the iPad disagree, and server be
 - **Do:** `LhmTaskStep.done` also requires `backend.http_get_json(pins.LHM_DATA_URL)` to answer. `run` calls `task_stop` first when the task exists, so that a running LHM reads the current settings file, then registers and starts as before.
 - **Acceptance:** a test with a task that has a last result and no `data.json` answer is not done, and a run stops, registers and starts it; with an answer it is done.
 - **Out of scope:** waiting for LHM inside the step (`detect` already waits).
+
+### Task P11: running tasks are healthy
+
+- **Files:** `src/fluentmon/doctor.py`, `tests/test_doctor.py`.
+- **Do:** the `Tasks` check accepts a last result of 0 or 267009 (`SCHED_S_TASK_RUNNING`). Every other value still fails. The pass detail says the tasks are registered, running or finished with result 0.
+- **Acceptance:** 267009 and 0 pass; 1 and 267014 fail.
+- **Out of scope:** `task_last_result` in the Windows backend.
+
+### Task P12: working server log under `pythonw.exe`
+
+- **Files:** `src/fluentmon/cli.py`, `tests/test_cli.py`.
+- **Do:** this corrects P5. `main` attaches the missing streams for `serve` before `logging.basicConfig`, which otherwise binds its handler to a `None` stream and writes a traceback for every log call. `main` also sets the `httpx` logger to `WARNING`, because it logs every sensor poll and the ntfy URL with its topic.
+- **Acceptance:** with both streams `None`, a message logged while serving is in `server.log`, with no `Logging error` and no `httpx` request line.
+- **Out of scope:** log rotation.
+
+### Task P13: the token stays out of the log
+
+- **Files:** `src/fluentmon/pairing.py`, `tests/test_pairing.py`.
+- **Do:** this corrects P5, which sent the startup pairing link, with the token, into `server.log`, a file every local user can read. Without an explicit `out`, `print_pairing` writes only when `sys.stdout` is a terminal. `fmon setup` passes `out` and prints as before.
+- **Acceptance:** the startup call writes the link to a terminal stream and nothing to any other stream.
+- **Out of scope:** the permissions of the log folder, token rotation.
 
 ### Open questions left for refinement
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 
 import pytest
@@ -101,10 +102,19 @@ def test_serve_without_streams_logs_to_server_log(tmp_path: Path, monkeypatch: p
     config.write_text('[server]\ntoken = "abc"\n', encoding="utf-8")
     monkeypatch.setattr(cli, "default_config_path", lambda: program_data / "config.toml")
     monkeypatch.setattr(cli, "build_app", lambda cfg, record: object())
-    monkeypatch.setattr(cli.uvicorn, "run", lambda *args, **kwargs: None)
+    def fake_run(*args: object, **kwargs: object) -> None:
+        logging.getLogger("fluentmon.probe").info("server started")
+        logging.getLogger("httpx").info("HTTP Request: GET data.json")
+
+    monkeypatch.setattr(cli.uvicorn, "run", fake_run)
+    monkeypatch.setattr(logging.root, "handlers", [])
+    monkeypatch.setattr(logging.root, "level", logging.WARNING)
     monkeypatch.setattr(sys, "stdout", None)
     monkeypatch.setattr(sys, "stderr", None)
     assert main(["serve", "--config", str(config)]) == 0
     log_file = program_data / "logs" / "server.log"
-    assert log_file.is_file()
+    text = log_file.read_text(encoding="utf-8")
+    assert "server started" in text
+    assert "HTTP Request" not in text
+    assert "Logging error" not in text
     sys.stdout.close()
