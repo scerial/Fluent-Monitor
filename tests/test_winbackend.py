@@ -183,6 +183,22 @@ def test_task_register_passes_values_through_environment(monkeypatch: pytest.Mon
     assert "RestartCount 999" in script
 
 
+def test_register_script_omits_empty_argument() -> None:
+    script = winbackend.REGISTER_SCRIPT
+    assert "[string]::IsNullOrEmpty($env:FMON_ARGS)" in script
+    assert "New-ScheduledTaskAction -Execute $env:FMON_PROGRAM\n" in script
+    assert "[string]::IsNullOrEmpty($env:FMON_RESTART)" in script
+    assert "-eq ''" not in script
+
+
+def test_task_register_with_no_arguments(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured: list[dict] = []
+    monkeypatch.setattr(winbackend, "_ps", lambda script, **env: captured.append(env) or "")
+    WindowsBackend().task_register("FluentMon LHM", Path("C:/LHM/LibreHardwareMonitor.exe"), "", True, 1)
+    assert captured[0]["FMON_ARGS"] == ""
+    assert captured[0]["FMON_RESTART"] == "1"
+
+
 def test_task_last_result_never_run_is_none(monkeypatch: pytest.MonkeyPatch) -> None:
     backend = WindowsBackend()
     monkeypatch.setattr(winbackend, "_ps", lambda script, **env: "267011\n")
