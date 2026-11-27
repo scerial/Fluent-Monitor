@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import io
+import sys
 from typing import Any
 
 import pytest
@@ -40,6 +41,14 @@ def test_no_network_uses_localhost(monkeypatch: pytest.MonkeyPatch) -> None:
     out = io.StringIO()
     print_pairing(cfg, out)
     assert out.getvalue().splitlines()[0] == "fluentmon://connect?host=localhost&port=8765&token=abc"
+
+
+def test_print_pairing_without_any_stream_writes_nothing(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(pairing, "lan_ipv4", lambda: "192.168.1.20")
+    monkeypatch.setattr(sys, "stdout", None)
+    cfg = Config()
+    cfg.server.token = "abc"
+    print_pairing(cfg)
 
 
 class FakeZeroconf:

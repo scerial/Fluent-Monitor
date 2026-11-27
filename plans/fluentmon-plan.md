@@ -91,8 +91,8 @@ DATA      = re.compile(r"^\s*(?P<it>\d+)\s+(?P<vals>(?:\S+\s+)+?)"
 FLOWTIME  = re.compile(r"^\s*Flow time\s*=\s*(?P<t>[-+0-9.eE]+)\s*s?\s*,\s*time step\s*=\s*(?P<n>\d+)")
 MORESTEPS = re.compile(r"^\s*(?P<n>\d+)\s+more time steps?")
 CONVERGED = re.compile(r"^\s*!\s*(?P<it>\d+)\s+solution is converged")
-PROBLEM   = re.compile(r"(Divergence detected|Floating point exception|Error:|"
-                       r"reversed flow|turbulent viscosity limited|temperature limited)", re.I)
+ERROR     = re.compile(r"(Divergence detected|Floating point exception|Error:)", re.I)
+WARNING   = re.compile(r"(reversed flow|turbulent viscosity limited|temperature limited)", re.I)
 
 def num(tok):
     try:
@@ -117,7 +117,7 @@ Rules:
 | `run_start` | first `iter`, or iterations-left larger than on the previous line | resets the progress baselines |
 | `step` | `FLOWTIME` + `MORESTEPS` | time-step bar, flow time |
 | `converged` | `CONVERGED` | green state, notification |
-| `problem` | `PROBLEM` | red banner, console highlight, push notification |
+| `problem` | `ERROR`, once per change of status into `problem` (a `WARNING` line is console kind `w` only) | red banner, console highlight, push notification |
 | `idle` | no `iter` for max(30 s, 5 × mean time per iteration) | grey state, bars freeze |
 | `line` | every line | console stream |
 
@@ -1172,6 +1172,10 @@ Interface changes since the architecture stage, each made on the user's request 
 | 2026-11-26 | Installer: `WindowsBackend` returns text from PowerShell as base64 of UTF-8; `windows` is registered as a pytest marker in `pyproject.toml` | Windows backend |
 | 2026-11-26 | Installer: supersedes the build-order row above. I9 and I10 are built with the placeholder pins; the recon step pins the real values afterwards, and no real install passes until then | Build order |
 | 2026-11-26 | Recon 2 (confirmed on a Windows PC): LHM's `LibreHardwareMonitor.config` uses `runWebServerMenuItem` = `true`, `listenerPort` = `8085`, `listenerIp` = `+` by default. `WEB_SERVER_KEYS` adds `listenerIp` = `127.0.0.1` so LHM's web server is local only, as section 9 requires | Installer: LHM settings file keys |
+| 2026-11-27 | Patch-up (section 17): the iPad decodes `sys.clk_mhz` entries as `Double?`, `bars.iter` and `bars.conv` as optional, and `bars.step.t_end` as `Double?`. The server's messages do not change; the client now accepts what the server already sends | Client decoding of the wire protocol (no shape change) |
+| 2026-11-27 | Patch-up (section 17): `reversed flow`, `turbulent viscosity limited` and `temperature limited` lines are console warnings (`w`) only and no longer raise a `problem` event; `PROBLEM` in section 2 is split into `ERROR` and `WARNING`. A `problem` event is emitted only when the status changes to `problem` | Parser patterns, event rule |
+| 2026-11-27 | Patch-up (section 17): the notifier rate-limits `converged` as well as `problem`, each kind on its own `dedupe_s` window | Notification behaviour |
+| 2026-11-27 | Patch-up (section 17): when `sys.stdout` or `sys.stderr` is `None` (started by `pythonw.exe`), `fmon serve` sends both to `logs\server.log` next to the default config path; `print_pairing` writes nothing when it has no stream | File layout (new `logs\server.log`), startup behaviour |
 | 2026-11-27 | The Python package moves from `fluentmon/` to `src/fluentmon/`; `pyproject.toml` finds packages under `src`. On Windows the top-level `fluentmon/` and the iPad app's `FluentMon/` are the same folder, so `uv tool install` built a wheel without the package and `fmon` failed with `No module named 'fluentmon'` (found on the first real install). Import names are unchanged | File layout |
 
 ## 13. Implementation instructions: iPad app
@@ -1749,3 +1753,88 @@ The assumed values at the start of this section stand until these are decided. Q
 10. **Task restart policy.** Both tasks restart after 1 minute with a large retry count (I7, I10). Section 5 says every 1 minute for the app and says nothing for LHM. Confirm the LHM value.
 11. **uv itself.** `install.ps1` installs `uv` with its official installer and does not pin a version (I10). Decide whether to pin it, and whether `uv tool update-shell` may change the user's `PATH`.
 12. **New files and the Changelog.** `setup/commands.py`, `doctor.py`, `__main__.py`, the other `setup/` modules and `installer/install.ps1` are not all in the project tree, and the added `enabled` field of the firewall rule, the `dry_run` and `purge` flags of the step context, and the `-Source` and `-Ref` arguments of the script are not in the Changelog. Once confirmed, record them there.
+
+## 17. Patch-up tasks (review of 2026-11-27)
+
+A code review found places where the server and the iPad disagree, and server behaviour that would mislead on real transcripts. These tasks fix them. The Python tasks come first because they can be tested on any PC; the Swift tasks need a Mac to build and are checked there afterwards. The rules of sections 13 and 15 apply: one task at a time, no comments in source files, no change to a fixed interface beyond the Changelog rows dated 2026-11-27, report every deviation.
+
+### Decisions
+
+| Item | Status | Value | How an assumed value is confirmed |
+| --- | --- | --- | --- |
+| Who adapts to the mismatched messages | decided | The iPad decodes what the server already sends; no wire message changes | none needed |
+| Missing `iter` or `conv` on the iPad | decided | Shown as an empty row (fill 0, empty caption), so the views do not change | none needed |
+| Warning phrases | decided | `reversed flow`, `turbulent viscosity limited`, `temperature limited` are warnings, not problems | none needed |
+| Problem event flood | decided | One `problem` event per change of status into `problem` | none needed |
+| Converged notification flood | decided | Same `dedupe_s` window as `problem`, tracked separately | none needed |
+| ETA during catch-up | decided | Wall-time gaps of 0 s or less are ignored, so a re-read transcript gives no ETA until live steps arrive | none needed |
+| Server log under `pythonw.exe` | assumed | `logs\server.log` next to `default_config_path()` | run the installed scheduled task and check `/api/health` and the log |
+
+### Task P1: step ETA during catch-up
+
+- **Files:** `src/fluentmon/model/progress.py`, `tests/test_progress.py`.
+- **Do:** in `StepTracker.update`, append `now - self._last_now` to `_gaps` only when it is greater than 0.
+- **Edge cases:** every update with the same `now` (no gap, `eta_s` is `None`, the label has no `ETA` part); a later update with a real gap gives an ETA.
+- **Acceptance:** a new test calls `update` five times with the same `now` and gets `eta_s is None` and no `ETA` in the label; one more call 5 s later gives `eta_s` equal to 5 × `more`. All existing progress tests still pass.
+- **Out of scope:** `ConvTracker`, the session manager.
+
+### Task P2: warnings are not problems
+
+- **Files:** `src/fluentmon/transcript/parser.py`, `src/fluentmon/model/session.py`, `tests/test_parser.py`, `tests/test_session.py`.
+- **Do:** replace `PROBLEM` with two unanchored patterns, `ERROR = re.compile(r"(Divergence detected|Floating point exception|Error:)", re.I)` and `WARNING = re.compile(r"(reversed flow|turbulent viscosity limited|temperature limited)", re.I)`. `Parser.feed` emits `ProblemEv` only when `ERROR` matches. `_kind` returns `e` for `ERROR` matches (case-insensitive, replacing the `ERROR_MARKERS` tuple), `w` for `WARNING` matches or lines starting with `Warning`, as before. In `SessionState._problem`, set `status = "problem"` always, but append the `problem` event only when the status was not already `problem`.
+- **Edge cases:** a line with both an error and a warning phrase (one `ProblemEv`, kind `e`); `reversed flow` in any letter case (kind `w`, no `ProblemEv`); two error lines in a row (one event); an error after an iteration (the iteration set `running`, so a new event).
+- **Acceptance:** tests for each edge case; feeding `tests/fixtures/fluent_steady_rans.trn` and `fluent_transient.trn` through `LineAssembler`, `Parser` and `SessionState` gives no more `problem` events than the number of lines matching `ERROR`, and zero `ProblemEv` for lines that match only `WARNING`. All existing parser and session tests pass, updated only where they asserted the old rule (report each one changed).
+- **Out of scope:** the notifier, the console colours on the iPad.
+
+### Task P3: converged notifications
+
+- **Files:** `src/fluentmon/notify.py`, `tests/test_notify.py`.
+- **Do:** keep `_last_problem` and add `_last_converged`; apply the `dedupe_s` window to `converged` exactly as to `problem`, each with its own timestamp.
+- **Edge cases:** a `problem` right after a `converged` (both sent); two `converged` 10 s apart (one sent); 301 s apart (two sent).
+- **Acceptance:** the existing notify tests pass; new tests for the three edge cases with a fake clock and `httpx.MockTransport`.
+- **Out of scope:** `idle` and `session_end` (sent every time, as before).
+
+### Task P4: a manual transcript reused after its session ended
+
+- **Files:** `src/fluentmon/transcript/manager.py`, `tests/test_manager.py`.
+- **Do:** `_Handler.on_any_event` passes `created = event.event_type in ("created", "moved")` to `_on_file(path, created)`. Add `self._ended_sizes: dict[str, int] = {}`. In `_end_session`, when the attached source has no `run_folder`, store the file size of `source.path` (0 if it cannot be read) under `str(source.path)`. In `_on_file`, a manual path already in `_seen_files` is attached again when `created` is true, or when its current size is smaller than the size stored in `_ended_sizes`; attaching removes it from `_ended_sizes`. A path whose session is still attached is never attached twice.
+- **Edge cases:** the file deleted and recreated; the file truncated and rewritten in place; a final write to the file after its session ended that makes it larger (not attached again); `_on_file` for a run-folder `console.trn` (unchanged behaviour).
+- **Acceptance:** a test attaches a manual `.trn`, ends the session through `_end_session`, truncates and rewrites the file, calls `_on_file(path, False)` and gets a second `SessionStarted`; appending to an ended file and calling `_on_file(path, False)` gives none. Existing manager tests pass.
+- **Out of scope:** run folders, the tailer.
+
+### Task P5: server started by `pythonw.exe`
+
+- **Files:** `src/fluentmon/pairing.py`, `src/fluentmon/cli.py`, `tests/test_pairing.py`, `tests/test_cli.py`.
+- **Do:** `print_pairing(cfg: Config, out: IO[str] | None = None) -> None` uses `out` or else `sys.stdout`, and returns without writing when both are `None`. In `cli._serve`, before `build_app`, when `sys.stdout is None or sys.stderr is None`, open `fluentmon.setup.commands.default_config_path().parent / "logs" / "server.log"` for appending in UTF-8 with line buffering (creating the folder), and assign it to whichever of the two is `None`.
+- **Edge cases:** the log folder missing (created); the folder not writable (fall back to `open(os.devnull, "w")`); both streams present (nothing changes).
+- **Acceptance:** a test patches `sys.stdout` to `None` and calls `print_pairing` without `out` (no exception, nothing written); a test patches both streams to `None`, `uvicorn.run` and `build_app`, and `default_config_path` to a temporary folder, runs `main(["serve", "--config", <temp config with a token>])`, and finds `server.log` created with `sys.stdout` and `sys.stderr` restored by the test afterwards.
+- **Out of scope:** log rotation, the doctor.
+
+### Task P6: iPad decoding of server messages (needs a Mac)
+
+- **Files:** `FluentMon/Net/Messages.swift`, `FluentMon/Model/MonitorStore.swift`, `FluentMon/Net/MonitorClient.swift`, `FluentMonTests/MessagesTests.swift`, `FluentMonTests/MonitorStoreTests.swift`.
+- **Do:** `SysMsg.clkMhz` becomes `[Double?]`; `cpuMeter` divides the `Double` by 1000. `BarsMsg.iter` becomes `IterBar?` and `BarsMsg.conv` becomes `ConvBar?`; `StepBar.tEnd` becomes `Double?`. `makeBars` keeps returning `Bars`: a missing `iter` becomes `BarRow(p: 0, label: "")`, a missing `conv` becomes `ConvRow(p: 0, of: 0, state: .ok, label: "")`; a missing `tEnd` gives the step caption `t = <flow time> s` (four decimals) with the ETA part as before. In `MonitorClient.receive`, replace `try?` with `do`/`catch` and log a decode failure with `os.Logger(subsystem: "dev.local.fluentmon", category: "net")`, keeping the socket open.
+- **Edge cases:** `clk_mhz` of `[890.5, null]`; `bars` with `"iter":null,"conv":null,"step":null`; a snapshot whose `bars` has `iter` and `conv` null; `step` with `"t_end":null`.
+- **Acceptance:** new `MessagesTests` decode each edge case; a `MonitorStoreTests` case applies the null-bars snapshot and then a `resid`, and the series holds the new point; existing tests updated only for the type change. `xcodebuild test` passes on the iPad simulator (run on a Mac; on Windows report the task as unbuilt).
+- **Out of scope:** the views (`ProgressBars` and the others stay unchanged).
+
+### Task P7: converged colour on the iPad (needs a Mac)
+
+- **Files:** `FluentMon/Model/MonitorStore.swift`, `FluentMonTests/MonitorStoreTests.swift`.
+- **Do:** in `applyEvent`, for `converged` rebuild `bars` with `converged: true` when `bars` exists; for `run_start` and `resumed` rebuild it with `converged: false`. `makeBars` keeps its current rule for bars that arrive later.
+- **Edge cases:** a `converged` event with no bars yet (nothing to rebuild); bars arriving before the event (turns green on the event).
+- **Acceptance:** a test applies `bars` and then a `converged` event and gets `store.bars?.converged == true`; a following `run_start` gives `false`.
+- **Out of scope:** colours in the views.
+
+### Task P8: housekeeping
+
+- **Files:** `FluentMon/Net/FluentLog.swift`, `FluentMon/Net/MockClient.swift`, `progress.md`.
+- **Do:** delete the `///` comment lines in the two Swift files. In `progress.md`, rewrite "Where things stand" to say: the server, installer and app are committed on `main`; the server has not been run end to end with the iPad; section 17 lists the patch-up tasks and which were built and tested. Remove the claim that nothing is committed and the "Uncommitted state" section.
+- **Acceptance:** no `///` or `//` comment lines remain in `FluentMon/`; `progress.md` matches the repository.
+- **Out of scope:** the plan's older open-question sections.
+
+### Open questions left for refinement
+
+1. The convergence reference: the iPad log replay uses the whole run, the server resets each time step (section 3). Pick one.
+2. `pin_ranks` and `allow_control` are config keys with no code behind them.
+3. Whether the iPad settings sheet should reach the server through `PUT /api/config`.

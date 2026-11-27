@@ -59,7 +59,6 @@ final class MockClient: Feed {
         feed(["t": "con", "first": first, "lines": lines, "kinds": String(repeating: "r", count: lines.count)])
     }
 
-    /// Feeds the next chunk of the solver log, with its bars and console lines, as if it were arriving live.
     private func replayStep() {
         guard let log else { return }
         if replayNext < log.rows.count {

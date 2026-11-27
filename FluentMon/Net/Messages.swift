@@ -51,14 +51,14 @@ struct StepBar: Decodable, Equatable {
     let n: Int
     let left: Int
     let flowTime: Double
-    let tEnd: Double
+    let tEnd: Double?
     let etaS: Double?
     let label: String
 }
 
 struct BarsMsg: Decodable, Equatable {
-    let iter: IterBar
-    let conv: ConvBar
+    let iter: IterBar?
+    let conv: ConvBar?
     let step: StepBar?
 }
 
@@ -99,7 +99,7 @@ struct SysMsg: Decodable, Equatable {
     let pkgW: Double?
     let pkgMaxW: Double?
     let tdpW: Double?
-    let clkMhz: [Int?]
+    let clkMhz: [Double?]
     let tctlC: Double?
     let ram: RamMsg
 }

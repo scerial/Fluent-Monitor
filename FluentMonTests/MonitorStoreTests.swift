@@ -67,6 +67,32 @@ final class MonitorStoreTests: XCTestCase {
         XCTAssertNil(store.bars?.step)
     }
 
+    func testNullBarsSnapshotThenResidAppends() throws {
+        let store = MonitorStore()
+        try apply(store, #"{"t":"snapshot","session":{"id":"x","case":"FFF","mode":"steady","status":"running","started":""},"columns":["continuity"],"kinds":["res"],"iters":[1,2],"values":[[1.0,0.5]],"bars":{"iter":null,"conv":null,"step":null},"con_tail":null}"#)
+        XCTAssertEqual(store.bars?.iter.label, "")
+        XCTAssertEqual(store.bars?.conv.label, "")
+        XCTAssertNil(store.bars?.step)
+        try apply(store, #"{"t":"resid","rows":[[3,[0.2]]]}"#)
+        XCTAssertEqual(store.series[0].points.map(\.iter), [1, 2, 3])
+    }
+
+    func testConvergedEventColoursBarsAndRunStartClearsIt() throws {
+        let store = MonitorStore()
+        try apply(store, #"{"t":"bars","iter":{"p":0.5,"done":5,"total":10,"left":5,"eta_s":10,"label":"x"},"conv":{"p":0.5,"rmax":0.001,"limiting":"continuity","decades":3.4,"of":6.0,"iters_to_target":100,"state":"ok"},"step":null}"#)
+        XCTAssertEqual(store.bars?.converged, false)
+        try apply(store, #"{"t":"event","kind":"converged","iter":3,"text":"x","ts":""}"#)
+        XCTAssertEqual(store.bars?.converged, true)
+        try apply(store, #"{"t":"event","kind":"run_start","iter":1,"text":"x","ts":""}"#)
+        XCTAssertEqual(store.bars?.converged, false)
+    }
+
+    func testConvergedEventWithoutBarsLeavesBarsNil() throws {
+        let store = MonitorStore()
+        try apply(store, #"{"t":"event","kind":"converged","iter":3,"text":"x","ts":""}"#)
+        XCTAssertNil(store.bars)
+    }
+
     func testConnectionStaleAfterSevenSeconds() throws {
         let store = MonitorStore()
         store.setOffline(false)

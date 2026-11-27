@@ -13,10 +13,8 @@ DATA      = re.compile(r"^\s*(?P<it>\d+)\s+(?P<vals>(?:\S+\s+)+?)"
 FLOWTIME  = re.compile(r"^\s*Flow time\s*=\s*(?P<t>[-+0-9.eE]+)\s*s?\s*,\s*time step\s*=\s*(?P<n>\d+)")
 MORESTEPS = re.compile(r"^\s*(?P<n>\d+)\s+more time steps?")
 CONVERGED = re.compile(r"^\s*!\s*(?P<it>\d+)\s+solution is converged")
-PROBLEM   = re.compile(r"(Divergence detected|Floating point exception|Error:|"
-                       r"reversed flow|turbulent viscosity limited|temperature limited)", re.I)
-
-ERROR_MARKERS = ("Error:", "Floating point exception", "Divergence detected")
+ERROR     = re.compile(r"(Divergence detected|Floating point exception|Error:)", re.I)
+WARNING   = re.compile(r"(reversed flow|turbulent viscosity limited|temperature limited)", re.I)
 
 
 def num(tok: str) -> float:
@@ -130,7 +128,7 @@ class Parser:
         if converged is not None:
             events.append(ConvergedEv(int(converged.group("it")), text.strip()))
 
-        if PROBLEM.search(text) is not None:
+        if ERROR.search(text) is not None:
             events.append(ProblemEv(text.strip()))
 
         return events
@@ -144,8 +142,8 @@ class Parser:
             return "s"
         if MORESTEPS.match(text):
             return "s" if self._flow is not None else "n"
-        if any(marker in text for marker in ERROR_MARKERS):
+        if ERROR.search(text):
             return "e"
-        if PROBLEM.search(text) or text.lstrip().startswith("Warning"):
+        if WARNING.search(text) or text.lstrip().startswith("Warning"):
             return "w"
         return "n"

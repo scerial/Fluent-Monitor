@@ -22,11 +22,14 @@ def lan_ipv4() -> str | None:
     return None
 
 
-def print_pairing(cfg: Config, out: IO[str] = sys.stdout) -> None:
+def print_pairing(cfg: Config, out: IO[str] | None = None) -> None:
+    stream = out if out is not None else sys.stdout
+    if stream is None:
+        return
     host = lan_ipv4() or "localhost"
     url = pairing_url(host, cfg.server.port, cfg.server.token)
-    print(url, file=out)
+    print(url, file=stream)
     code = qrcode.QRCode()
     code.add_data(url)
     code.make(fit=True)
-    code.print_ascii(out=out)
+    code.print_ascii(out=stream)

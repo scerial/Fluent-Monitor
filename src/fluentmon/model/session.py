@@ -319,7 +319,9 @@ class SessionState:
         return changes
 
     def _problem(self, ev: ProblemEv) -> Changes:
+        was_problem = self.status == "problem"
         self.status = "problem"
         changes = Changes()
-        changes.events.append(self._event("problem", ev.text, self._last_iter()))
+        if not was_problem:
+            changes.events.append(self._event("problem", ev.text, self._last_iter()))
         return changes

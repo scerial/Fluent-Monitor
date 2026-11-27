@@ -155,3 +155,21 @@ def test_step_tracker_reset_clears_state() -> None:
     result = tracker.update(100.0, 50, 0.05, 50)
     assert result["p"] == pytest.approx(1 / 51)
     assert result["eta_s"] is None
+
+
+def test_step_tracker_same_now_gives_no_eta() -> None:
+    tracker = StepTracker()
+    result = None
+    for step in range(1, 6):
+        result = tracker.update(0.0, step, 0.001 * step, 10 - step)
+    assert result is not None
+    assert result["eta_s"] is None
+    assert "ETA" not in result["label"]
+
+
+def test_step_tracker_real_gap_after_same_now_gives_eta() -> None:
+    tracker = StepTracker()
+    for step in range(1, 6):
+        tracker.update(0.0, step, 0.001 * step, 10 - step)
+    result = tracker.update(5.0, 6, 0.006, 4)
+    assert result["eta_s"] == pytest.approx(5.0 * 4)

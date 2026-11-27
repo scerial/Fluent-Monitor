@@ -34,13 +34,36 @@ final class MessagesTests: XCTestCase {
         let bars = #"{"t":"bars","iter":{"p":0.5,"done":5,"total":10,"left":5,"eta_s":10,"label":"x"},"conv":{"p":0.5,"rmax":0.001,"limiting":"continuity","decades":3.4,"of":6.0,"iters_to_target":100,"state":"ok"},"step":null}"#
         guard case .bars(let b)? = try decode(bars) else { return XCTFail("not bars") }
         XCTAssertNil(b.step)
-        XCTAssertEqual(b.conv.state, "ok")
+        XCTAssertEqual(b.conv?.state, "ok")
 
         let sys = #"{"t":"sys","cpu_ids":[0],"cpu":[50.0],"pkg_w":null,"pkg_max_w":162,"tdp_w":120,"clk_mhz":[null],"tctl_c":null,"ram":{"total":100,"used":50,"fluent":10}}"#
         guard case .sys(let s)? = try decode(sys) else { return XCTFail("not sys") }
         XCTAssertNil(s.pkgW)
         XCTAssertNil(s.clkMhz[0])
         XCTAssertEqual(s.ram.fluent, 10)
+    }
+
+    func testSysClockDecimalAndNull() throws {
+        let sys = #"{"t":"sys","cpu_ids":[0,4],"cpu":[50.0,60.0],"pkg_w":null,"pkg_max_w":162,"tdp_w":120,"clk_mhz":[890.5,null],"tctl_c":null,"ram":{"total":100,"used":50,"fluent":10}}"#
+        guard case .sys(let s)? = try decode(sys) else { return XCTFail("not sys") }
+        XCTAssertEqual(s.clkMhz[0], 890.5)
+        XCTAssertNil(s.clkMhz[1])
+    }
+
+    func testBarsWithAllNullIterConvStep() throws {
+        guard case .bars(let b)? = try decode(#"{"t":"bars","iter":null,"conv":null,"step":null}"#) else {
+            return XCTFail("not bars")
+        }
+        XCTAssertNil(b.iter)
+        XCTAssertNil(b.conv)
+        XCTAssertNil(b.step)
+    }
+
+    func testStepWithNullTEnd() throws {
+        let bars = #"{"t":"bars","iter":null,"conv":null,"step":{"p":0.1,"n":120,"left":880,"flow_time":0.012,"t_end":null,"eta_s":null,"label":"x"}}"#
+        guard case .bars(let b)? = try decode(bars) else { return XCTFail("not bars") }
+        XCTAssertNil(b.step?.tEnd)
+        XCTAssertEqual(b.step?.flowTime, 0.012)
     }
 
     func testUnknownTypeIsSkipped() throws {
