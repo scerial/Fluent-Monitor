@@ -23,10 +23,16 @@ class LhmTaskStep:
     undoable = True
 
     def done(self, ctx: Context) -> bool:
-        return ctx.backend.task_exists(LHM_TASK) and ctx.backend.task_last_result(LHM_TASK) is not None
+        return (
+            ctx.backend.task_exists(LHM_TASK)
+            and ctx.backend.task_last_result(LHM_TASK) is not None
+            and ctx.backend.http_get_json(pins.LHM_DATA_URL) is not None
+        )
 
     def run(self, ctx: Context) -> dict:
         backend = ctx.backend
+        if backend.task_exists(LHM_TASK):
+            backend.task_stop(LHM_TASK)
         backend.task_register(LHM_TASK, pins.INSTALL_DIR / pins.LHM_EXE, "", True, 1)
         try:
             backend.task_start(LHM_TASK)
@@ -91,6 +97,14 @@ class FirewallStep:
         ctx.backend.fw_remove(RULE_NAME)
 
 
+def _is_lhm_on_http_sys(ctx: Context, port: int, owner: str) -> bool:
+    return (
+        port == LHM_PORT
+        and owner.lower() == "system"
+        and ctx.backend.http_get_json(pins.LHM_DATA_URL) is not None
+    )
+
+
 class PreflightStep:
     id = "preflight"
     undoable = False
@@ -107,7 +121,7 @@ class PreflightStep:
             raise StepError("fmon setup runs on Windows 10 or 11 only")
         for port in (self._port, LHM_PORT):
             owner = backend.port_owner(port)
-            if owner is not None and owner.lower() not in OWNERS_ALLOWED:
+            if owner is not None and owner.lower() not in OWNERS_ALLOWED and not _is_lhm_on_http_sys(ctx, port, owner):
                 raise StepError(f"port {port} is held by {owner}")
         if ctx.lhm_zip is None and not backend.can_connect("github.com", 443):
             raise StepError("github.com is not reachable on port 443")

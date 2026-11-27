@@ -51,6 +51,21 @@ def test_print_pairing_without_any_stream_writes_nothing(monkeypatch: pytest.Mon
     print_pairing(cfg)
 
 
+@pytest.mark.parametrize("terminal", [True, False])
+def test_startup_pairing_goes_only_to_a_terminal(monkeypatch: pytest.MonkeyPatch, terminal: bool) -> None:
+    class Stream(io.StringIO):
+        def isatty(self) -> bool:
+            return terminal
+
+    stream = Stream()
+    monkeypatch.setattr(pairing, "lan_ipv4", lambda: "192.168.1.20")
+    monkeypatch.setattr(sys, "stdout", stream)
+    cfg = Config()
+    cfg.server.token = "abc"
+    print_pairing(cfg)
+    assert ("token=abc" in stream.getvalue()) is terminal
+
+
 class FakeZeroconf:
     registered: list[Any] = []
     closed: list[bool] = []

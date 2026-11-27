@@ -24,7 +24,7 @@ def lan_ipv4() -> str | None:
 
 def print_pairing(cfg: Config, out: IO[str] | None = None) -> None:
     stream = out if out is not None else sys.stdout
-    if stream is None:
+    if stream is None or (out is None and not stream.isatty()):
         return
     host = lan_ipv4() or "localhost"
     url = pairing_url(host, cfg.server.port, cfg.server.token)

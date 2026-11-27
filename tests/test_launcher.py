@@ -2,13 +2,18 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import shutil
 import stat
 import sys
+import time
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import psutil
 import pytest
 
+from fluentmon import launcher
 from fluentmon.config import Config
 from fluentmon.launcher import RunSpec, launch, prepare_run
 
@@ -111,3 +116,45 @@ def test_missing_fluent_is_refused_before_creating_a_folder(
         assert launch(cfg, spec) == 2
     assert "not found" in caplog.text
     assert not (tmp_path / "runs").exists()
+
+
+windows_only = pytest.mark.skipif(sys.platform != "win32", reason="needs real Windows processes")
+
+
+def launch_batch(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, body: str) -> tuple[int, str, bool]:
+    shutil.copy(os.environ["COMSPEC"], tmp_path / "cx2610.exe")
+    batch = tmp_path / "fluent.bat"
+    batch.write_text(f"@echo off\n{body}\n", encoding="ascii")
+    seen: dict[str, object] = {}
+    write = launcher._write_json_atomic
+
+    def record(path: Path, data: dict) -> None:
+        seen["name"] = psutil.Process(data["pid"]).name()
+        write(path, data)
+        seen["file"] = json.loads(path.read_text(encoding="utf-8"))
+
+    monkeypatch.setattr(launcher, "_write_json_atomic", record)
+    spec = RunSpec(case=Path("duct.cas.h5"), cores=2, fluent_exe=batch)
+    started = time.monotonic()
+    code = launch(make_cfg(tmp_path), spec)
+    assert time.monotonic() - started >= 2.0
+    session = seen["file"]
+    assert isinstance(session, dict)
+    return code, str(seen["name"]).lower(), psutil.pid_exists(session["pid"])
+
+
+@windows_only
+def test_launch_follows_the_host_that_outlives_the_launcher(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    body = 'start "" /b "%~dp0cx2610.exe" /d /c "ping -n 4 127.0.0.1 >nul & exit 7"\nexit /b 0'
+    code, name, alive_after = launch_batch(tmp_path, monkeypatch, body)
+    assert name == "cx2610.exe"
+    assert code == 7
+    assert not alive_after
+
+
+@windows_only
+def test_launch_without_a_host_follows_the_started_process(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(launcher, "HOST_WAIT_S", 0.5)
+    code, name, _ = launch_batch(tmp_path, monkeypatch, "ping -n 4 127.0.0.1 >nul\nexit /b 3")
+    assert name == "cmd.exe"
+    assert code == 3

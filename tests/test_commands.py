@@ -328,3 +328,20 @@ def commands_ctx(backend: FakeBackend, lhm_zip: Path | None = None):
         log_path=Path("C:/ProgramData/FluentMon/logs/setup.log"),
         lhm_zip=lhm_zip,
     )
+
+
+def test_preflight_accepts_system_on_lhm_port_when_lhm_answers() -> None:
+    backend = FakeBackend()
+    backend.ports[8085] = "System"
+    backend.json_by_url[pins.LHM_DATA_URL] = {"Children": []}
+    assert PreflightStep().run(commands_ctx(backend, lhm_zip=Path("C:/x.zip"))) == {}
+
+
+@pytest.mark.parametrize(("port", "answers"), [(8085, False), (8765, True)])
+def test_preflight_rejects_other_system_owners(port: int, answers: bool) -> None:
+    backend = FakeBackend()
+    backend.ports[port] = "System"
+    if answers:
+        backend.json_by_url[pins.LHM_DATA_URL] = {"Children": []}
+    with pytest.raises(StepError, match=f"port {port} is held by System"):
+        PreflightStep().run(commands_ctx(backend, lhm_zip=Path("C:/x.zip")))

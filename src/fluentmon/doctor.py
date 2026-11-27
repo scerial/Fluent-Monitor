@@ -11,6 +11,9 @@ from fluentmon.config import Config
 from fluentmon.setup.backend import Backend
 from fluentmon.system.power import find_sensor
 
+TASK_RUNNING = 267009
+TASK_OK_RESULTS = frozenset({0, TASK_RUNNING})
+
 HINTS: dict[str, str] = {
     "LHM": "start LibreHardwareMonitor and turn on its web server on 127.0.0.1:8085",
     "Sensors": "run fmon setup again to detect the sensors",
@@ -138,7 +141,7 @@ def _tasks(cfg: Config, backend: Backend, state: dict) -> Check:
         result = backend.task_last_result(name)
         if result is None:
             problems.append(f"{name} has never run")
-        elif result != 0:
+        elif result not in TASK_OK_RESULTS:
             problems.append(f"{name} last result is {result}")
     if problems:
         return _fail("Tasks", "; ".join(problems))
@@ -150,7 +153,7 @@ def _tasks(cfg: Config, backend: Backend, state: dict) -> Check:
             "FluentMon task runs a different program than this installation",
             "run fmon setup again after an upgrade",
         )
-    return _pass("Tasks", "FluentMon and FluentMon LHM are registered and ran with result 0")
+    return _pass("Tasks", "FluentMon and FluentMon LHM are registered, running or finished with result 0")
 
 
 def _folders(cfg: Config, backend: Backend, state: dict) -> Check:

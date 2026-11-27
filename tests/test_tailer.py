@@ -201,6 +201,23 @@ def test_empty_batches_are_never_delivered(tmp_path: Path) -> None:
     run_scenario(path, scenario)
 
 
+def test_safety_read_keeps_polling_without_change_events(tmp_path: Path) -> None:
+    path = tmp_path / "console.trn"
+    path.write_bytes(b"")
+
+    async def scenario(tailer: FileTailer, rec: Recorder) -> None:
+        await wait_until(lambda: rec.live_calls == 1)
+        setattr(tailer, "_notify", lambda: None)
+        await asyncio.sleep(0.3)
+        for n in range(1, 4):
+            append(path, f"quiet {n}\n")
+            await wait_until(lambda: f"quiet {n}" in rec.all_lines())
+            await asyncio.sleep(0.3)
+        assert rec.all_lines() == ["quiet 1", "quiet 2", "quiet 3"]
+
+    run_scenario(path, scenario, safety_read_s=0.1)
+
+
 def test_safety_read_runs_without_error(tmp_path: Path) -> None:
     path = tmp_path / "console.trn"
     path.write_bytes(b"")

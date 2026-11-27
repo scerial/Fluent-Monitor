@@ -36,10 +36,14 @@ PRIVATE_PROBE = ("10.255.255.255", 1)
 
 REGISTER_SCRIPT = """
 $user = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-$action = New-ScheduledTaskAction -Execute $env:FMON_PROGRAM -Argument $env:FMON_ARGS
+if ([string]::IsNullOrEmpty($env:FMON_ARGS)) {
+    $action = New-ScheduledTaskAction -Execute $env:FMON_PROGRAM
+} else {
+    $action = New-ScheduledTaskAction -Execute $env:FMON_PROGRAM -Argument $env:FMON_ARGS
+}
 $trigger = New-ScheduledTaskTrigger -AtLogOn -User $user
 $principal = New-ScheduledTaskPrincipal -UserId $user -LogonType Interactive -RunLevel $env:FMON_LEVEL
-if ($env:FMON_RESTART -eq '') {
+if ([string]::IsNullOrEmpty($env:FMON_RESTART)) {
     $settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero)
 } else {
     $settings = New-ScheduledTaskSettingsSet -ExecutionTimeLimit ([TimeSpan]::Zero) -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes ([int]$env:FMON_RESTART))
