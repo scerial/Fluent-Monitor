@@ -52,20 +52,15 @@ struct DashboardView: View {
 
         return ZStack(alignment: .topLeading) {
             HeaderBand(session: store.session, connection: store.connection, lastIteration: store.lastIterationAt)
-                .padding(.trailing, 76)
+                .padding(.trailing, 96)
                 .place(geo.header)
-            HStack(spacing: 8) {
-                Button(action: onConnect) {
-                    Image(systemName: "wifi")
-                }
-                .accessibilityLabel("Connection")
-                Button(action: onSettings) {
-                    Image(systemName: "gearshape")
-                }
-                .accessibilityLabel("Settings")
+            HStack(spacing: 0) {
+                headerButton("wifi", label: "Connection", action: onConnect)
+                headerButton("gearshape", label: "Settings", action: onSettings)
             }
             .frame(width: geo.header.width, height: geo.header.height, alignment: .trailing)
             .place(geo.header)
+            .zIndex(1)
             ResidualChart(store: store)
                 .place(geo.chart)
                 .opacity(dimmed)
@@ -85,5 +80,15 @@ struct DashboardView: View {
         }
         .frame(width: size.width, height: size.height, alignment: .topLeading)
         .animation(.snappy(duration: 0.35), value: geo)
+    }
+
+    private func headerButton(_ symbol: String, label: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 20))
+                .frame(width: 44, height: 44)
+                .contentShape(Rectangle())
+        }
+        .accessibilityLabel(label)
     }
 }

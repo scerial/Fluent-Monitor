@@ -94,9 +94,12 @@ extension Thermal {
     }
 
     func color(_ t: Double) -> Color {
-        if fraction(t) > 0.9 { return .red }
-        if t > warnC { return .yellow }
-        return Palette.cool
+        switch t.rounded() {
+        case ..<60: return Palette.cool
+        case ..<70: return Palette.temperature
+        case ..<80: return Palette.hot
+        default: return .red
+        }
     }
 }
 
@@ -321,15 +324,12 @@ final class MonitorStore {
     private func powerMeter(id: Int) -> Meter {
         let watts = sys?.pkgW
         let temp = sys?.tctlC
-        let color = temp.map { thermal.color($0) } ?? Palette.cool
         let maxW = sys?.pkgMaxW ?? 162
-        let tdp = sys?.tdpW ?? 120
-        return Meter(id: id, title: "Power",
-                     major: watts.map { "\(Int($0.rounded())) W" } ?? "—",
-                     minor: temp.map { "\(Int($0.rounded())) °C" } ?? "—",
-                     minorColor: color,
-                     outer: watts.map { [Segment(id: 0, from: 0, to: $0 / maxW, color: $0 > tdp ? Palette.hot : Palette.cool)] } ?? [],
-                     inner: temp.map { [Segment(id: 0, from: 0, to: thermal.fraction($0), color: color)] } ?? [])
+        return Meter(id: id, title: "Temp",
+                     major: temp.map { "\(Int($0.rounded())) °C" } ?? "—",
+                     minor: watts.map { "\(Int($0.rounded())) W" } ?? "—",
+                     outer: temp.map { [Segment(id: 0, from: 0, to: thermal.fraction($0), color: thermal.color($0))] } ?? [],
+                     inner: watts.map { [Segment(id: 0, from: 0, to: $0 / maxW, color: Palette.power)] } ?? [])
     }
 
     private func ramMeter(id: Int) -> Meter {

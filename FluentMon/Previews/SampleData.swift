@@ -9,9 +9,9 @@ enum SampleData {
     static let meters: [Meter] = [
         Meter(id: 1, title: "CPU 4", major: "97 %", minor: "4.9 GHz",
               outer: [Segment(id: 0, from: 0, to: 0.97, color: Palette.cool)]),
-        Meter(id: 4, title: "Power", major: "71 W", minor: "68 °C", minorColor: Palette.cool,
-              outer: [Segment(id: 0, from: 0, to: 71 / 200, color: Palette.cool)],
-              inner: [Segment(id: 0, from: 0, to: (68 - 20) / (90 - 20), color: Palette.cool)]),
+        Meter(id: 4, title: "Temp", major: "68 °C", minor: "71 W",
+              outer: [Segment(id: 0, from: 0, to: (68 - 20) / (90 - 20), color: Palette.temperature)],
+              inner: [Segment(id: 0, from: 0, to: 71 / 200, color: Palette.power)]),
         Meter(id: 5, title: "RAM", major: "62 %", minor: "Fluent 12.0 GB", minorColor: Palette.fluent,
               outer: [Segment(id: 0, from: 0, to: 0.25, color: Palette.fluent),
                       Segment(id: 1, from: 0.25, to: 0.62, color: .gray.opacity(0.6))]),
