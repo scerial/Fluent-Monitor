@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 from collections.abc import Sequence
 from pathlib import Path
@@ -13,7 +14,7 @@ from fluentmon.app import build_app
 from fluentmon.config import load_config
 from fluentmon.launcher import RunSpec, launch
 from fluentmon.setup.backend import Backend
-from fluentmon.setup.commands import run_doctor, run_setup, run_uninstall
+from fluentmon.setup.commands import default_config_path, run_doctor, run_setup, run_uninstall
 
 INSTALLER_COMMANDS = ("setup", "doctor", "uninstall")
 
@@ -33,7 +34,23 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _attach_missing_streams() -> None:
+    if sys.stdout is not None and sys.stderr is not None:
+        return
+    try:
+        log_dir = default_config_path().parent / "logs"
+        log_dir.mkdir(parents=True, exist_ok=True)
+        stream = open(log_dir / "server.log", "a", encoding="utf-8", buffering=1)
+    except OSError:
+        stream = open(os.devnull, "w", encoding="utf-8")
+    if sys.stdout is None:
+        sys.stdout = stream
+    if sys.stderr is None:
+        sys.stderr = stream
+
+
 def _serve(args: argparse.Namespace) -> int:
+    _attach_missing_streams()
     cfg = load_config(args.config)
     if not cfg.server.token:
         print("refusing to start: config.toml has no [server] token", file=sys.stderr)

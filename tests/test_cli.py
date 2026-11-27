@@ -89,3 +89,22 @@ def test_launch_runs_stub_and_returns_its_code(tmp_path: Path) -> None:
     )
     assert code == 3
     assert any((tmp_path / "runs").iterdir())
+
+
+def test_serve_without_streams_logs_to_server_log(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    import sys
+
+    from fluentmon import cli
+
+    program_data = tmp_path / "ProgramData" / "FluentMon"
+    config = tmp_path / "config.toml"
+    config.write_text('[server]\ntoken = "abc"\n', encoding="utf-8")
+    monkeypatch.setattr(cli, "default_config_path", lambda: program_data / "config.toml")
+    monkeypatch.setattr(cli, "build_app", lambda cfg, record: object())
+    monkeypatch.setattr(cli.uvicorn, "run", lambda *args, **kwargs: None)
+    monkeypatch.setattr(sys, "stdout", None)
+    monkeypatch.setattr(sys, "stderr", None)
+    assert main(["serve", "--config", str(config)]) == 0
+    log_file = program_data / "logs" / "server.log"
+    assert log_file.is_file()
+    sys.stdout.close()
