@@ -4,10 +4,10 @@ Last updated: 2026-11-25. Written so other agents can pick up the work without t
 
 ## Where things stand
 
-- **Branch:** `ui-ipad-prototype`. Last commit `b57f5f4`. **Nothing from the work below is committed.** Many files are untracked or modified (see "Uncommitted state").
-- **App:** the iPad client (SwiftUI, iOS 17+, bundle `dev.local.fluentmon`) builds for the iPad Air 11-inch (M2) simulator and runs.
+- **Branch:** the server, installer and app are committed on `main`.
+- **Server:** the server has not been run end to end with the iPad.
+- **Patch-up:** section 17 of `plans/fluentmon-plan.md` lists the patch-up tasks P1 to P8 and which were built and tested.
 - **Project file:** `FluentMon.xcodeproj` is generated from `project.yml` with xcodegen. Run `xcodegen generate` after adding files.
-- **Server:** the Windows FluentMon server is **not in this repo** and has not been built. The app has never talked to a real server.
 
 ## Plan and rules
 
@@ -16,7 +16,6 @@ Last updated: 2026-11-25. Written so other agents can pick up the work without t
 - `RULES.md`: branch before committing on the default branch, no comments in source files, changelog entry for interface or file-layout changes.
 - **Plan deviations to resolve:**
   - Section 3 says transient runs use a per-step reference for the convergence bar. The app currently uses a whole-run reference (see "Convergence bar" below). This needs a decision.
-  - Section 12 changelog is not yet updated for the new files listed under "Uncommitted state".
 
 ## Architecture (app)
 
@@ -79,13 +78,6 @@ Last updated: 2026-11-25. Written so other agents can pick up the work without t
 - `xcodebuild` can ignore `timeout`'s SIGTERM and keep running. Kill it by PID, then rerun with output to a log file. Check with `ps`.
 - SourceKit shows "Cannot find type" and "No such module XCTest" for single files. These are noise. The real signal is `xcodebuild`.
 - The iOS Simulator panel was attached with the `attach` action of the simulator tool. Launch with args uses `xcrun simctl`, because the tool's `launch` does not pass arguments.
-
-## Uncommitted state
-
-- Modified: `FluentMon/Previews/ResidualChartPreviews.swift`, `FluentMon/Previews/SampleData.swift`, `FluentMon/Views/ConnectSheet.swift`, `FluentMon/Net/MockClient.swift`.
-- Deleted (unstaged or staged): `FluentMon/Stubs/StandInTypes.swift`, `prototype/` directory.
-- Untracked: `FluentMon.xcodeproj/`, `FluentMon/` (App, Info.plist, Layout, Model, Net, Views), `FluentMonTests/`, `project.yml`, `log sample.txt`, `progress.md`.
-- New since the last commit: `FluentMon/Net/FluentLog.swift`, `FluentMonTests/FluentLogTests.swift`.
 
 ## Open items
 

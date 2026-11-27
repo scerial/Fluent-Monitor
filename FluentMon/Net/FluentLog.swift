@@ -8,14 +8,12 @@ struct FluentLog {
         let values: [Double]
     }
 
-    /// Solver state as it stood when a row was read, so any prefix of the run can be replayed.
     struct Progress {
         let stepStart: Int
         let step: Int
         let stepsLeft: Int
         let flowTime: Double
         let lineCount: Int
-        /// Lowest value the least converged residual has reached so far, and which column it is.
         let best: Double
         let bestColumn: Int
     }
@@ -96,7 +94,6 @@ struct FluentLog {
         return FluentLog(text: String(decoding: data, as: UTF8.self))
     }
 
-    /// Snapshot of the first `count` rows, with the console tail up to the same point.
     func snapshot(upTo count: Int) -> [String: Any] {
         let end = min(count, rows.count)
         let lineEnd = end > 0 ? progress[end - 1].lineCount : 0
@@ -119,7 +116,6 @@ struct FluentLog {
         return message
     }
 
-    /// Console lines produced by rows `range`, including the non-data lines that follow them.
     func console(rows range: Range<Int>) -> [String: Any]? {
         guard !range.isEmpty else { return nil }
         let lower = range.lowerBound > 0 ? progress[range.lowerBound - 1].lineCount : 0
@@ -127,7 +123,6 @@ struct FluentLog {
         return console(lines: lower..<upper)
     }
 
-    /// Console lines after the last data row, sent once the replay reaches the end of the run.
     func trailingConsole() -> [String: Any]? {
         let lower = progress.last?.lineCount ?? 0
         return console(lines: lower..<lines.count)
