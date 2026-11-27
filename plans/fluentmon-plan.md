@@ -1177,6 +1177,7 @@ Interface changes since the architecture stage, each made on the user's request 
 | 2026-11-27 | Patch-up (section 17): the notifier rate-limits `converged` as well as `problem`, each kind on its own `dedupe_s` window | Notification behaviour |
 | 2026-11-27 | Patch-up (section 17): when `sys.stdout` or `sys.stderr` is `None` (started by `pythonw.exe`), `fmon serve` sends both to `logs\server.log` next to the default config path; `print_pairing` writes nothing when it has no stream | File layout (new `logs\server.log`), startup behaviour |
 | 2026-11-27 | Patch-up (section 17): preflight accepts `System` as the owner of port 8085 when LHM's `data.json` answers, and `task_lhm` is done only while `data.json` answers; otherwise it stops, registers and starts the task again (found on the first real install) | Installer: preflight and `task_lhm` rules |
+| 2026-11-27 | Patch-up (section 17): the doctor's `Tasks` check also passes a last result of 267009 (task is running), which is what both tasks report on a healthy install | Doctor check |
 | 2026-11-27 | The Python package moves from `fluentmon/` to `src/fluentmon/`; `pyproject.toml` finds packages under `src`. On Windows the top-level `fluentmon/` and the iPad app's `FluentMon/` are the same folder, so `uv tool install` built a wheel without the package and `fmon` failed with `No module named 'fluentmon'` (found on the first real install). Import names are unchanged | File layout |
 
 ## 13. Implementation instructions: iPad app
@@ -1847,6 +1848,13 @@ A code review found places where the server and the iPad disagree, and server be
 - **Do:** `LhmTaskStep.done` also requires `backend.http_get_json(pins.LHM_DATA_URL)` to answer. `run` calls `task_stop` first when the task exists, so that a running LHM reads the current settings file, then registers and starts as before.
 - **Acceptance:** a test with a task that has a last result and no `data.json` answer is not done, and a run stops, registers and starts it; with an answer it is done.
 - **Out of scope:** waiting for LHM inside the step (`detect` already waits).
+
+### Task P11: running tasks are healthy
+
+- **Files:** `src/fluentmon/doctor.py`, `tests/test_doctor.py`.
+- **Do:** the `Tasks` check accepts a last result of 0 or 267009 (`SCHED_S_TASK_RUNNING`). Every other value still fails. The pass detail says the tasks are registered, running or finished with result 0.
+- **Acceptance:** 267009 and 0 pass; 1 and 267014 fail.
+- **Out of scope:** `task_last_result` in the Windows backend.
 
 ### Open questions left for refinement
 

@@ -72,11 +72,19 @@ def test_all_pass_render_text_is_stable() -> None:
         "pass Port             192.168.0.10:8765 accepts connections\n"
         "pass Network profile  Private\n"
         "pass Firewall         rule FluentMon is enabled on Private for port 8765\n"
-        "pass Tasks            FluentMon and FluentMon LHM are registered and ran with result 0\n"
+        "pass Tasks            FluentMon and FluentMon LHM are registered, running or finished with result 0\n"
         "pass Folders          C:/FluentMon/transcripts and C:/FluentMon/runs are writable\n"
         "pass Config           config parses; token has 32 characters or more\n"
         "pass Fluent           ANSYS install found at C:/Program Files/ANSYS Inc/v241\n"
     )
+
+
+@pytest.mark.parametrize(("result", "level"), [(267009, "pass"), (0, "pass"), (1, "fail"), (267014, "fail")])
+def test_task_result_levels(result: int, level: str) -> None:
+    backend, cfg = finished()
+    for name in ("FluentMon", "FluentMon LHM"):
+        backend.tasks[name]["last_result"] = result
+    assert levels(run_checks(cfg, backend))["Tasks"] == level
 
 
 def test_json_form_has_ten_objects() -> None:
