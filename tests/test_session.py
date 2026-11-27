@@ -211,6 +211,33 @@ def test_problem_then_iteration_returns_to_running() -> None:
     assert state.status == "running"
 
 
+def test_two_error_lines_in_a_row_give_one_problem() -> None:
+    state = make_state()
+    drive(state, [TWO_NAMES, data(1, 9)])
+    first = drive(state, ["Divergence detected in the solution"])
+    second = drive(state, ["Error: floating point exception"])
+    assert [ev["kind"] for ev in events_of(first)] == ["problem"]
+    assert events_of(second) == []
+    assert state.status == "problem"
+
+
+def test_error_after_iteration_gives_a_new_problem() -> None:
+    state = make_state()
+    drive(state, [TWO_NAMES, data(1, 9)])
+    drive(state, ["Divergence detected in the solution"])
+    drive(state, [data(2, 8)], now=1.0)
+    changes = drive(state, ["Error: floating point exception"], now=2.0)
+    assert [ev["kind"] for ev in events_of(changes)] == ["problem"]
+
+
+def test_warning_phrase_does_not_change_status() -> None:
+    state = make_state()
+    drive(state, [TWO_NAMES, data(1, 9)])
+    changes = drive(state, ["reversed flow in 12 cells"])
+    assert events_of(changes) == []
+    assert state.status == "running"
+
+
 def test_end_emits_session_end() -> None:
     state = make_state()
     changes = state.end(0.0)

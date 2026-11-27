@@ -127,8 +127,25 @@ def test_divergence_is_error_and_problem() -> None:
 def test_warning_line_kind_w() -> None:
     line = "Warning: reversed flow in 12 cells"
     events = run([line])
-    assert events[0] == LineEv(line, "w")
-    assert events[1] == ProblemEv(line)
+    assert events == [LineEv(line, "w")]
+
+
+def test_warning_phrase_in_any_case_is_not_a_problem() -> None:
+    line = "Turbulent Viscosity Limited in 4 cells"
+    events = run([line])
+    assert events == [LineEv(line, "w")]
+
+
+def test_error_and_warning_phrase_give_one_problem() -> None:
+    line = "Error: temperature limited at face 7"
+    events = run([line])
+    assert events == [LineEv(line, "e"), ProblemEv(line)]
+
+
+def test_error_marker_is_case_insensitive() -> None:
+    line = "error: floating point exception"
+    events = run([line])
+    assert events == [LineEv(line, "e"), ProblemEv(line)]
 
 
 def test_trailing_cr_and_spaces_are_ignored() -> None:
