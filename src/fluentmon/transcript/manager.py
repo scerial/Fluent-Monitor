@@ -112,9 +112,10 @@ class _Handler(FileSystemEventHandler):
         dest = getattr(event, "dest_path", "")
         if dest:
             paths.append(dest)
+        created = event.event_type in ("created", "moved")
         for raw in paths:
             try:
-                self._loop.call_soon_threadsafe(self._manager._on_file, Path(os.fsdecode(raw)))
+                self._loop.call_soon_threadsafe(self._manager._on_file, Path(os.fsdecode(raw)), created)
             except RuntimeError:
                 log.debug("loop closed, file event dropped")
 
@@ -131,6 +132,7 @@ class SessionManager:
         self._current: SessionState | None = None
         self._seen_runs: set[str] = set()
         self._seen_files: set[str] = set()
+        self._ended_sizes: dict[str, int] = {}
 
     async def run(self) -> None:
         self._loop = asyncio.get_running_loop()
@@ -199,15 +201,26 @@ class SessionManager:
             newest = max(manual, key=lambda p: p.stat().st_mtime)
             self._attach_manual(newest)
 
-    def _on_file(self, path: Path) -> None:
+    def _on_file(self, path: Path, created: bool = False) -> None:
         if path.name == "session.json":
             self._try_run(path.parent)
         elif path.name == "console.trn":
             if (path.parent / "session.json").exists():
                 self._try_run(path.parent)
         elif path.parent == self.watch_dir and path.suffix in TRANSCRIPT_SUFFIXES:
-            if path.is_file() and str(path) not in self._seen_files:
+            if not path.is_file():
+                return
+            key = str(path)
+            if key not in self._seen_files:
                 self._attach_manual(path)
+                return
+            ended_size = self._ended_sizes.get(key)
+            if ended_size is None:
+                return
+            if not created and path.stat().st_size >= ended_size:
+                return
+            del self._ended_sizes[key]
+            self._attach_manual(path)
 
     def _try_run(self, folder: Path) -> bool:
         key = str(folder)
@@ -340,6 +353,12 @@ class SessionManager:
         self.bus.publish(SessionEnded(state.session_id))
         attached = self._attached.pop(state.session_id, None)
         if attached is not None:
+            if attached.source is not None and attached.source.run_folder is None:
+                try:
+                    size = attached.source.path.stat().st_size
+                except OSError:
+                    size = 0
+                self._ended_sizes[str(attached.source.path)] = size
             attached.tailer.stop()
             attached.task.cancel()
             if attached.exit_task is not None and attached.exit_task is not asyncio.current_task():

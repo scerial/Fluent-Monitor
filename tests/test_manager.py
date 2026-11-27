@@ -210,3 +210,44 @@ def test_transcript_path_for_known_and_unknown_session(tmp_path: Path) -> None:
         assert manager.transcript_path("no-such-session") is None
 
     run_with(cfg, scenario)
+
+
+def test_rewritten_manual_file_after_end_is_attached_again(tmp_path: Path) -> None:
+    cfg, _, watch = make_config(tmp_path)
+    watch.mkdir(parents=True)
+    transcript = watch / "replay.trn"
+
+    async def scenario(manager: SessionManager, queue: asyncio.Queue[object]) -> None:
+        transcript.write_text(HEADER + "\n" + data_line(1, 9) + data_line(2, 8), encoding="utf-8")
+        first = await take(queue, SessionStarted)
+        assert isinstance(first, SessionStarted)
+        state = manager.sessions()[0]
+        manager._end_session(state)
+        await take(queue, SessionEnded)
+        transcript.write_text(HEADER + "\n" + data_line(1, 9), encoding="utf-8")
+        manager._on_file(transcript, False)
+        second = await take(queue, SessionStarted)
+        assert isinstance(second, SessionStarted)
+        assert second.session_id != first.session_id
+
+    run_with(cfg, scenario)
+
+
+def test_appended_manual_file_after_end_is_not_attached_again(tmp_path: Path) -> None:
+    cfg, _, watch = make_config(tmp_path)
+    watch.mkdir(parents=True)
+    transcript = watch / "replay.trn"
+
+    async def scenario(manager: SessionManager, queue: asyncio.Queue[object]) -> None:
+        transcript.write_text(HEADER + "\n" + data_line(1, 9), encoding="utf-8")
+        await take(queue, SessionStarted)
+        manager._end_session(manager.sessions()[0])
+        await take(queue, SessionEnded)
+        with transcript.open("a", encoding="utf-8") as handle:
+            handle.write(data_line(2, 8))
+        manager._on_file(transcript, False)
+        await asyncio.sleep(0.2)
+        assert manager.current() is None or manager.current().status == "ended"
+        assert len(manager.sessions()) == 1
+
+    run_with(cfg, scenario)
