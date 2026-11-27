@@ -260,12 +260,21 @@ final class MonitorStore {
 
     private func applyEvent(_ event: EventMsg) {
         switch event.kind {
-        case "run_start", "resumed": session?.status = .running
-        case "converged": session?.status = .converged
+        case "run_start", "resumed":
+            session?.status = .running
+            setBarsConverged(false)
+        case "converged":
+            session?.status = .converged
+            setBarsConverged(true)
         case "problem": session?.status = .problem
         case "idle", "session_end": session?.status = .idle
         default: break
         }
+    }
+
+    private func setBarsConverged(_ value: Bool) {
+        guard let current = bars else { return }
+        bars = Bars(iter: current.iter, converged: value, conv: current.conv, step: current.step)
     }
 
     private func makeBars(_ msg: BarsMsg) -> Bars {
