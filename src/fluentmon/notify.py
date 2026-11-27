@@ -31,6 +31,7 @@ class Notifier:
         self.dedupe_s = dedupe_s
         self._clock = clock
         self._last_problem: float | None = None
+        self._last_converged: float | None = None
 
     async def handle(self, ev: dict) -> None:
         if not self.topic:
@@ -43,6 +44,11 @@ class Notifier:
             if self._last_problem is not None and now - self._last_problem < self.dedupe_s:
                 return
             self._last_problem = now
+        if kind == "converged":
+            now = self._clock()
+            if self._last_converged is not None and now - self._last_converged < self.dedupe_s:
+                return
+            self._last_converged = now
         text = ev.get("text") or ""
         body = f"{kind}: {text}" if text else str(kind)
         client = self._client if self._client is not None else httpx.AsyncClient(timeout=10.0)

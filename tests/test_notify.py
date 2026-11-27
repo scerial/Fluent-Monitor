@@ -79,6 +79,47 @@ def test_problem_after_window_posts_again() -> None:
     run(main())
 
 
+def test_converged_is_deduplicated_within_window() -> None:
+    async def main() -> None:
+        client, requests = recording_client()
+        clock = Clock()
+        notifier = Notifier("topic", client=client, clock=clock)
+        event = {"t": "event", "kind": "converged", "iter": 9, "text": "! 9 solution is converged", "ts": "x"}
+        await notifier.handle(event)
+        clock.now += 10.0
+        await notifier.handle(event)
+        assert len(requests) == 1
+
+    run(main())
+
+
+def test_converged_after_window_posts_again() -> None:
+    async def main() -> None:
+        client, requests = recording_client()
+        clock = Clock()
+        notifier = Notifier("topic", client=client, clock=clock)
+        event = {"t": "event", "kind": "converged", "iter": 9, "text": "! 9 solution is converged", "ts": "x"}
+        await notifier.handle(event)
+        clock.now += 301.0
+        await notifier.handle(event)
+        assert len(requests) == 2
+
+    run(main())
+
+
+def test_problem_after_converged_is_sent() -> None:
+    async def main() -> None:
+        client, requests = recording_client()
+        clock = Clock()
+        notifier = Notifier("topic", client=client, clock=clock)
+        await notifier.handle({"t": "event", "kind": "converged", "iter": 9, "text": "! 9 solution is converged", "ts": "x"})
+        clock.now += 10.0
+        await notifier.handle({"t": "event", "kind": "problem", "iter": 9, "text": "Divergence detected", "ts": "x"})
+        assert len(requests) == 2
+
+    run(main())
+
+
 def test_idle_and_session_end_are_sent() -> None:
     async def main() -> None:
         client, requests = recording_client()
