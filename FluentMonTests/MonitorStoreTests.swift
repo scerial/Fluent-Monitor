@@ -1,3 +1,4 @@
+import SwiftUI
 import XCTest
 @testable import FluentMon
 
@@ -42,10 +43,24 @@ final class MonitorStoreTests: XCTestCase {
         XCTAssertEqual(meters.count, 6)
         XCTAssertEqual(meters[0].major, "50 %")
         XCTAssertEqual(meters[0].minor, "5.0 GHz")
-        XCTAssertEqual(meters[4].minor, "68 °C")
-        XCTAssertEqual(meters[4].major, "71 W")
+        XCTAssertEqual(meters[4].major, "68 °C")
+        XCTAssertEqual(meters[4].minor, "71 W")
+        XCTAssertEqual(meters[4].outer.map(\.color), [Palette.temperature])
+        XCTAssertEqual(meters[4].inner.map(\.color), [Palette.power])
         XCTAssertEqual(meters[5].major, "62 %")
         XCTAssertEqual(meters[5].minor, "Fluent 0.0 GB")
+    }
+
+    func testTemperatureRingColorTiers() throws {
+        let store = MonitorStore()
+        store.settings.meterCpus = [0]
+        let tiers = [(59.0, Palette.cool), (60.0, Palette.temperature), (69.0, Palette.temperature),
+                     (70.0, Palette.hot), (79.0, Palette.hot), (80.0, Color.red)]
+        for (temp, color) in tiers {
+            try apply(store, #"{"t":"sys","cpu_ids":[0],"cpu":[10],"pkg_w":150,"pkg_max_w":162,"tdp_w":120,"clk_mhz":[4000],"tctl_c":\#(temp),"ram":{"total":100,"used":10,"fluent":1}}"#)
+            XCTAssertEqual(store.meters[1].outer.map(\.color), [color])
+            XCTAssertEqual(store.meters[1].inner.map(\.color), [Palette.power])
+        }
     }
 
     func testMissingPowerSensorShowsDash() throws {

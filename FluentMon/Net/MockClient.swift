@@ -147,7 +147,7 @@ final class MockClient: Feed {
         feed(["t": "sys", "cpu_ids": [0, 4, 8, 12],
               "cpu": [60 + 30 * sin(t / 7), 70 + 25 * sin(t / 5), 80 + 15 * sin(t / 9), 65 + 30 * sin(t / 6)],
               "pkg_w": 90 + 25 * sin(t / 4), "pkg_max_w": 162, "tdp_w": 120,
-              "clk_mhz": [4950, 4925, 4975, 4900], "tctl_c": 68 + 4 * sin(t / 11),
+              "clk_mhz": [4950, 4925, 4975, 4900], "tctl_c": 70 + 20 * sin(t / 11),
               "ram": ["total": 34359738368.0, "used": 21474836480.0 + 1e9 * sin(t / 13),
                       "fluent": 12884901888.0]])
     }
