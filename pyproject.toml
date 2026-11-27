@@ -25,6 +25,7 @@ dev = ["pytest", "hypothesis"]
 fmon = "fluentmon.cli:main"
 
 [tool.setuptools.packages.find]
+where = ["src"]
 include = ["fluentmon*"]
 
 [tool.pytest.ini_options]
